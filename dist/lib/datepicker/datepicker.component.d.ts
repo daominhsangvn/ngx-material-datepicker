@@ -33,9 +33,9 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     private formatDate(date);
     private _onValueTouched;
     private _onValueChange;
-    value: any;
+    value: Date;
     registerOnChange(fn: (value: any) => any): void;
     registerOnTouched(fn: () => any): void;
-    writeValue(value: any): void;
+    writeValue(value: Date): void;
 }
 export declare type Type = 'date' | 'time' | 'datetime';

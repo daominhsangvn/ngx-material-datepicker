@@ -281,13 +281,13 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   };
 
   // get accessor
-  public get value(): any {
+  public get value(): Date {
     console.log('get value');
     return this.date;
   };
 
   // set accessor including call the onchange callback
-  public set value(v: any) {
+  public set value(v: Date) {
     console.log('set value', v);
     this._onValueChange(v);
   }
@@ -304,7 +304,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   // From ControlValueAccessor interface
   // ngModel change
-  public writeValue(value: any) {
+  public writeValue(value: Date) {
     this.date = value;
   }
 }
