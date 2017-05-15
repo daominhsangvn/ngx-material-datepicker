@@ -1,6 +1,6 @@
 import { Component, Output, Input, EventEmitter, forwardRef, ElementRef, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-// ngModel
+//ngModel
 var DATE_PICKER_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(function () { return DatePickerComponent; }),
@@ -9,11 +9,16 @@ var DATE_PICKER_VALUE_ACCESSOR = {
 import { MdDialog } from '@angular/material';
 import { CalendarComponent } from './calendar.component';
 import { LANG_EN } from './lang-en';
+var coerceBooleanProperty = function (value) {
+    return value != null && "" + value !== 'false';
+};
 var DatePickerComponent = (function () {
     function DatePickerComponent(dialog, _element) {
         this._element = _element;
         this._format = 'MM/dd/yyyy';
         this._type = 'date';
+        this._required = false;
+        this._disabled = false;
         this.dateChange = new EventEmitter();
         this._MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         this._DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -25,14 +30,37 @@ var DatePickerComponent = (function () {
         this.dialog = dialog;
         this.dayNames = LANG_EN.weekDays;
         this.monthNames = LANG_EN.months;
+        // if (this._control) {
+        //   this._control.valueAccessor = this;
+        // }
     }
+    Object.defineProperty(DatePickerComponent.prototype, "required", {
+        get: function () {
+            return this._required;
+        },
+        set: function (value) {
+            this._required = coerceBooleanProperty(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DatePickerComponent.prototype, "disabled", {
+        get: function () {
+            return this._disabled;
+        },
+        set: function (value) {
+            this._disabled = coerceBooleanProperty(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(DatePickerComponent.prototype, "type", {
         get: function () {
             return this._type;
         },
         set: function (value) {
             this._type = value || 'date';
-            if (this._input) {
+            if (this._input && this.dateVal) {
                 this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
             }
         },
@@ -46,7 +74,7 @@ var DatePickerComponent = (function () {
         set: function (value) {
             if (this._format !== value) {
                 this._format = value;
-                if (this._input) {
+                if (this._input && this.dateVal) {
                     this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
                 }
             }
@@ -75,9 +103,11 @@ var DatePickerComponent = (function () {
     });
     ;
     DatePickerComponent.prototype.ngOnInit = function () {
-        if (this.date === undefined) {
+        if (!this.date) {
             this.date = new Date();
         }
+    };
+    DatePickerComponent.prototype._handleWindowResize = function (event) {
     };
     DatePickerComponent.prototype.openDialog = function () {
         var _this = this;
@@ -217,7 +247,16 @@ export { DatePickerComponent };
 DatePickerComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ngx-md-datepicker',
-                template: "\n    <md-input-container flex>\n      <input mdInput (click)=\"openDialog()\" mdInput [value]=\"formattedDate\" (ngModelChange)=\"onChange($event)\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
+                template: "\n    <md-input-container flex>\n      <input (click)=\"openDialog()\" \n        mdInput \n        #input\n        (change)=\"$event.stopPropagation()\"\n        (keydown)=\"$event.preventDefault()\"\n        [value]=\"formattedDate\" \n        (ngModelChange)=\"onChange($event)\" \n        placeholder=\"{{placeholder}}\"\n        [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
+                host: {
+                    'role': 'datepicker',
+                    '[class.ngx-md-datepicker-disabled]': 'disabled',
+                    '[attr.aria-label]': 'placeholder',
+                    '[attr.aria-required]': 'required.toString()',
+                    '[attr.aria-disabled]': 'disabled.toString()',
+                    '[attr.aria-invalid]': '_control?.invalid || "false"',
+                    '(window:resize)': '_handleWindowResize($event)'
+                },
                 exportAs: 'datePicker',
                 providers: [DATE_PICKER_VALUE_ACCESSOR]
             },] },
@@ -229,8 +268,11 @@ DatePickerComponent.ctorParameters = function () { return [
 ]; };
 DatePickerComponent.propDecorators = {
     '_input': [{ type: ViewChild, args: ['input',] },],
+    'required': [{ type: Input },],
+    'disabled': [{ type: Input },],
     'dateChange': [{ type: Output },],
     'type': [{ type: Input },],
     'format': [{ type: Input },],
     'date': [{ type: Input },],
+    'placeholder': [{ type: Input },],
 };

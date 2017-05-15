@@ -1,4 +1,10 @@
 import { Component } from '@angular/core';
+import {
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder
+} from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +12,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  public frm: FormGroup;
   title = 'app works!';
-  date: Date = new Date();
+  date: Date;
+
+  constructor(private _fb: FormBuilder){
+    this.frm = this._fb.group({
+      date: new FormControl(null, [
+        Validators.required
+      ]),
+    });
+  }
 }

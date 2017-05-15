@@ -65,6 +65,7 @@ export declare class CalendarComponent implements OnInit {
     _toggleHours(value: ClockView): void;
     getDayBackgroundColor(day: Date): "day-background-selected" | "day-background-normal";
     getDayForegroundColor(day: Date): "day-foreground-selected" | "day-foreground-today" | "day-foreground-normal";
+    onClear(): void;
     onToday(): void;
     onPrevMonth(): void;
     onNextMonth(): void;

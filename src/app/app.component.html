@@ -2,6 +2,14 @@
   {{title}}
 </h1>
 
-
-<ngx-md-datepicker [type]="'time'" [(ngModel)]="date" [format]="'MM/dd/yyyy HH:mm:ss a'"></ngx-md-datepicker>
-{{date}}
+<form id="form"
+      [formGroup]="frm"
+      name="form"
+      role="form"
+      novalidate="">
+<ngx-md-datepicker [type]="'time'"
+                   formControlName="date"
+                   [format]="'MM/dd/yyyy HH:mm:ss a'"
+                   [placeholder]="'Date/Time'"></ngx-md-datepicker>
+</form>
+{{frm.get('date').errors | json}}

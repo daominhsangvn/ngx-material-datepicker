@@ -70,8 +70,9 @@ import {DateUtil} from './date-util';
       </div>
       <div class="footer ng-material-datepicker">
         <a md-button (click)="onToday()">Today</a>
-        <a md-button (click)="onCancel()">Cancel</a>
+        <!--<a md-button (click)="onCancel()">Cancel</a>-->
         <a md-button (click)="onOk()">Ok</a>
+        <a md-button (click)="onClear()">Clear</a>
       </div>
     </div>
   </div>
@@ -309,6 +310,10 @@ export class CalendarComponent implements OnInit {
     } else {
       return 'day-foreground-normal';
     }
+  }
+
+  onClear(){
+    this.submit.emit(null);
   }
 
   onToday() {

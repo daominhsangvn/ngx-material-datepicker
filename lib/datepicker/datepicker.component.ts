@@ -1,10 +1,22 @@
-import {Component, Output, Input, EventEmitter, OnInit, forwardRef, ElementRef, ViewChild} from '@angular/core';
+import {
+  Component,
+  Output,
+  Input,
+  EventEmitter,
+  OnInit,
+  forwardRef,
+  ElementRef,
+  ViewChild,
+  Self,
+  Optional
+} from '@angular/core';
 import {
   ControlValueAccessor,
+  NgControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 
-// ngModel
+//ngModel
 const DATE_PICKER_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => DatePickerComponent),
@@ -17,14 +29,35 @@ import {Month} from './month.model';
 import {Weekday} from './weekday.model';
 import {LANG_EN} from './lang-en';
 
+let coerceBooleanProperty = (value: any): boolean => {
+  return value != null && `${value}` !== 'false';
+}
+
 @Component({
   selector: 'ngx-md-datepicker',
   template: `
     <md-input-container flex>
-      <input mdInput (click)="openDialog()" mdInput [value]="formattedDate" (ngModelChange)="onChange($event)">
+      <input (click)="openDialog()" 
+        mdInput 
+        #input
+        (change)="$event.stopPropagation()"
+        (keydown)="$event.preventDefault()"
+        [value]="formattedDate" 
+        (ngModelChange)="onChange($event)" 
+        placeholder="{{placeholder}}"
+        [disabled]="disabled">
       <md-icon mdPrefix>date_range</md-icon>
     </md-input-container>
   `,
+  host: {
+    'role': 'datepicker',
+    '[class.ngx-md-datepicker-disabled]': 'disabled',
+    '[attr.aria-label]': 'placeholder',
+    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.aria-invalid]': '_control?.invalid || "false"',
+    '(window:resize)': '_handleWindowResize($event)'
+  },
   exportAs: 'datePicker',
   providers: [DATE_PICKER_VALUE_ACCESSOR]
 })
@@ -34,12 +67,32 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   private dateVal: Date;
   private _format = 'MM/dd/yyyy';
   private _type: Type = 'date';
+  private _required: boolean = false;
+  private _disabled: boolean = false;
 
   dayNames: Array<Weekday>;
   monthNames: Array<Month>;
   formattedDate: string;
 
   @ViewChild('input') _input: ElementRef;
+
+  @Input()
+  get required(): boolean {
+    return this._required;
+  }
+
+  set required(value) {
+    this._required = coerceBooleanProperty(value);
+  }
+
+  @Input()
+  get disabled(): boolean {
+    return this._disabled;
+  }
+
+  set disabled(value) {
+    this._disabled = coerceBooleanProperty(value);
+  }
 
   @Output()
   public dateChange = new EventEmitter<Date>();
@@ -51,7 +104,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   set type(value: Type) {
     this._type = value || 'date';
-    if (this._input) {
+    if (this._input && this.dateVal) {
       this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
     }
   }
@@ -64,7 +117,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   set format(value) {
     if (this._format !== value) {
       this._format = value;
-      if (this._input) {
+      if (this._input && this.dateVal) {
         this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
       }
     }
@@ -87,17 +140,26 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     this.formattedDate = this.formatDate(val);
   }
 
+  @Input() placeholder: string;
+
   constructor(dialog: MdDialog,
-              private _element: ElementRef) {
+              private _element: ElementRef,
+              /*@Self() @Optional() public _control: NgControl*/) {
     this.dialog = dialog;
     this.dayNames = LANG_EN.weekDays;
     this.monthNames = LANG_EN.months;
+    // if (this._control) {
+    //   this._control.valueAccessor = this;
+    // }
   }
 
   ngOnInit() {
-    if (this.date === undefined) {
+    if (!this.date) {
       this.date = new Date();
     }
+  }
+
+  _handleWindowResize(event: Event) {
   }
 
   openDialog() {
