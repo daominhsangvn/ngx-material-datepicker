@@ -132,9 +132,6 @@ var DatePickerComponent = (function () {
     };
     // http://mattkruse.com/javascript/date/source.html
     DatePickerComponent.prototype._formatDate = function (date, format) {
-        if (!date) {
-            return "";
-        }
         format = format + "";
         var result = "";
         var i_format = 0;
@@ -211,6 +208,16 @@ var DatePickerComponent = (function () {
         return result;
     };
     DatePickerComponent.prototype.formatDate = function (date) {
+        if (!date) {
+            return '';
+        }
+        if (typeof date === 'string') {
+            try {
+                date = new Date(date);
+            }
+            catch (e) {
+            }
+        }
         if (!date) {
             return '';
         }

@@ -189,9 +189,6 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   // http://mattkruse.com/javascript/date/source.html
   private _formatDate(date, format) {
-    if (!date) {
-      return "";
-    }
     format = format + "";
     let result = "";
     let i_format = 0;
@@ -268,6 +265,15 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   }
 
   private formatDate(date: Date): string {
+    if (!date) {
+      return '';
+    }
+    if (typeof date === 'string') {
+      try {
+        date = new Date(date);
+      } catch (e) {
+      }
+    }
     if (!date) {
       return '';
     }
