@@ -102,8 +102,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   set type(value: Type) {
     this._type = value || 'date';
-    if (this._input && this.dateVal) {
-      this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
+    if (this._input) {
+      this._input.nativeElement.value = this.formatDate(this.dateVal);
     }
   }
 
@@ -115,8 +115,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   set format(value) {
     if (this._format !== value) {
       this._format = value;
-      if (this._input && this.dateVal) {
-        this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
+      if (this._input) {
+        this._input.nativeElement.value = this.formatDate(this.dateVal);
       }
     }
   }
@@ -189,6 +189,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   // http://mattkruse.com/javascript/date/source.html
   private _formatDate(date, format) {
+    if (!date) {
+      return "";
+    }
     format = format + "";
     let result = "";
     let i_format = 0;

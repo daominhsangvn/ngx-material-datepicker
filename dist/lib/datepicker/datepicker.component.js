@@ -60,8 +60,8 @@ var DatePickerComponent = (function () {
         },
         set: function (value) {
             this._type = value || 'date';
-            if (this._input && this.dateVal) {
-                this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
+            if (this._input) {
+                this._input.nativeElement.value = this.formatDate(this.dateVal);
             }
         },
         enumerable: true,
@@ -74,8 +74,8 @@ var DatePickerComponent = (function () {
         set: function (value) {
             if (this._format !== value) {
                 this._format = value;
-                if (this._input && this.dateVal) {
-                    this._input.nativeElement.value = this._formatDate(this.dateVal, this._format);
+                if (this._input) {
+                    this._input.nativeElement.value = this.formatDate(this.dateVal);
                 }
             }
         },
@@ -132,6 +132,9 @@ var DatePickerComponent = (function () {
     };
     // http://mattkruse.com/javascript/date/source.html
     DatePickerComponent.prototype._formatDate = function (date, format) {
+        if (!date) {
+            return "";
+        }
         format = format + "";
         var result = "";
         var i_format = 0;
