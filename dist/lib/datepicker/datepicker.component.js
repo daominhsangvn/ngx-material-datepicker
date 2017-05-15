@@ -247,7 +247,7 @@ export { DatePickerComponent };
 DatePickerComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ngx-md-datepicker',
-                template: "\n    <md-input-container flex>\n      <input (click)=\"openDialog()\" \n        mdInput \n        #input\n        (change)=\"$event.stopPropagation()\"\n        (keydown)=\"$event.preventDefault()\"\n        [value]=\"formattedDate\" \n        (ngModelChange)=\"onChange($event)\" \n        placeholder=\"{{placeholder}}\"\n        [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
+                template: "\n    <md-input-container flex>\n      <input (click)=\"openDialog()\" \n        mdInput \n        #input\n        (keydown)=\"$event.preventDefault()\"\n        [value]=\"formattedDate\" \n        placeholder=\"{{placeholder}}\"\n        [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
                 host: {
                     'role': 'datepicker',
                     '[class.ngx-md-datepicker-disabled]': 'disabled',

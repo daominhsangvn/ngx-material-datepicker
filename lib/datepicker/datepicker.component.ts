@@ -40,10 +40,8 @@ let coerceBooleanProperty = (value: any): boolean => {
       <input (click)="openDialog()" 
         mdInput 
         #input
-        (change)="$event.stopPropagation()"
         (keydown)="$event.preventDefault()"
         [value]="formattedDate" 
-        (ngModelChange)="onChange($event)" 
         placeholder="{{placeholder}}"
         [disabled]="disabled">
       <md-icon mdPrefix>date_range</md-icon>
