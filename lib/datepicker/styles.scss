@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '~@angular/material/_theming.scss';
 
 @mixin calendar-theme($theme) {
   $primary: map-get($theme, primary);
