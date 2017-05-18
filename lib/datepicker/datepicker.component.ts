@@ -163,7 +163,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   openDialog() {
     let ref = this.dialog.open(CalendarComponent, {
       data: {
-        type: this.type
+        type: this.type,
+        date: this.date
       }
     });
 

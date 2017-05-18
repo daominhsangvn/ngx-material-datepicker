@@ -209,7 +209,7 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.date = new Date();
+    this.date = this.data.date || new Date();
   }
 
   private updateDate(date: Date) {
