@@ -14,12 +14,14 @@ import {DateUtil} from './date-util';
   template: `
   <div class="ngx-md-datepicker-container">
     <div class="header ng-material-datepicker">
-      <a href="javascript:void(0)" class="year-date" (click)="_showCalendar()" [class.active]="_isCalendarVisible">
+      <a href="javascript:void(0)" class="year-date" (click)="_showCalendar()" 
+      *ngIf="data.type === 'date' || data.type === 'datetime'"
+      [class.active]="_isCalendarVisible">
         <p class="year">{{ currentYear }}</p>
         <p class="date">{{ getDateLabel }}</p>
       </a>
       <div class="md2-datepicker-header-time"
-           *ngIf="data.type!=='date'"
+           *ngIf="data.type === 'time' || data.type === 'datetime'"
            [class.active]="!_isCalendarVisible">
             <a href="javascript:void(0)" class="md2-datepicker-header-hour"
                   [class.active]="_clockView === 'hour'"
@@ -205,11 +207,11 @@ export class CalendarComponent implements OnInit {
     this.calendarService = calendarService;
     this.dayNames = LANG_EN.weekDays;
     this.monthNames = LANG_EN.months;
-    this._isCalendarVisible = true;
   }
 
   ngOnInit() {
     this.date = this.data.date || new Date();
+    this._isCalendarVisible = this.data.type !== 'time';
   }
 
   private updateDate(date: Date) {
