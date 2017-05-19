@@ -142,8 +142,8 @@ ngx-md-clock {
 }
 
 .nav.ng-material-datepicker {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   min-height: 40px;
   overflow: hidden;
   position: relative;
@@ -215,11 +215,11 @@ ngx-md-clock {
 
 .content.ng-material-datepicker .day {
   display: inline-block;
-  width: 2.64em;
-  height: 2.64em;
+  width: 2.44em;
+  height: 2.44em;
   margin: 0 0.28em 0.4em;
-  border-radius: 2.64em;
-  line-height: 2.64em;
+  border-radius: 2.44em;
+  line-height: 2.44em;
   text-align: center;
   -webkit-transition: 0.37s;
   transition: 0.37s;
