@@ -26,6 +26,8 @@ export declare class CalendarComponent implements OnInit {
     readonly hours: string;
     readonly getDateLabel: string;
     readonly getMonthLabel: string;
+    private _ampm;
+    ampm: string;
     cancel: EventEmitter<void>;
     submit: EventEmitter<Date>;
     dayNames: Array<Weekday>;
@@ -46,6 +48,8 @@ export declare class CalendarComponent implements OnInit {
     _isCalendarVisible: boolean;
     _clockView: ClockView;
     timeInterval: number;
+    disable24Hr: boolean;
+    ampmView: boolean;
     constructor(calendarService: CalendarService, _locale: DateLocale, _util: DateUtil, data: any);
     ngOnInit(): void;
     private updateDate(date);
@@ -63,6 +67,7 @@ export declare class CalendarComponent implements OnInit {
      * Toggle Hour visiblity
      */
     _toggleHours(value: ClockView): void;
+    _toggleAmpm(): void;
     getDayBackgroundColor(day: Date): "day-background-selected" | "day-background-normal";
     getDayForegroundColor(day: Date): "day-foreground-selected" | "day-foreground-today" | "day-foreground-normal";
     onClear(): void;

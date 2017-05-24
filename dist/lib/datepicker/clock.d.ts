@@ -5,7 +5,7 @@ export declare const CLOCK_RADIUS = 50;
 export declare const CLOCK_INNER_RADIUS = 27.5;
 export declare const CLOCK_OUTER_RADIUS = 41.25;
 export declare const CLOCK_TICK_RADIUS = 7.0833;
-export declare type ClockView = 'hour' | 'minute';
+export declare type ClockView = 'hour' | 'minute' | 'ampm';
 /**
  * A clock that is used as part of the datepicker.
  * @docs-private

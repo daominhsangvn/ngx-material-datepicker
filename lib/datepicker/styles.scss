@@ -76,6 +76,11 @@ ngx-md-clock {
               opacity: 1;
             }
           }
+          &.md2-datepicker-header-ampm {
+            &.active {
+              opacity: 1;
+            }
+          }
         }
       }
     }

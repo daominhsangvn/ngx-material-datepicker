@@ -1,83 +1,90 @@
-import {Component, EventEmitter, Input, OnInit, Output, Inject} from '@angular/core';
-import {animate, trigger, transition, style, keyframes} from '@angular/animations';
-import {MD_DIALOG_DATA} from '@angular/material';
-import {CalendarService} from './calendar.service';
-import {Month} from './month.model';
-import {Weekday} from './weekday.model';
-import {LANG_EN} from './lang-en';
-import {ClockView} from './clock';
-import {DateLocale} from './date-locale';
-import {DateUtil} from './date-util';
+import { Component, EventEmitter, Input, OnInit, Output, Inject } from '@angular/core';
+import { animate, trigger, transition, style, keyframes } from '@angular/animations';
+import { MD_DIALOG_DATA } from '@angular/material';
+import { CalendarService } from './calendar.service';
+import { Month } from './month.model';
+import { Weekday } from './weekday.model';
+import { LANG_EN } from './lang-en';
+import { ClockView } from './clock';
+import { DateLocale } from './date-locale';
+import { DateUtil } from './date-util';
 
 @Component({
   selector: 'ngx-material-datepicker-calendar',
   template: `
-  <div class="ngx-md-datepicker-container">
-    <div class="header ng-material-datepicker">
-      <a href="javascript:void(0)" class="year-date" (click)="_showCalendar()" 
-      *ngIf="data.type === 'date' || data.type === 'datetime'"
-      [class.active]="_isCalendarVisible">
-        <p class="year">{{ currentYear }}</p>
-        <p class="date">{{ getDateLabel }}</p>
-      </a>
-      <div class="md2-datepicker-header-time"
-           *ngIf="data.type === 'time' || data.type === 'datetime'"
-           [class.active]="!_isCalendarVisible">
-            <a href="javascript:void(0)" class="md2-datepicker-header-hour"
-                  [class.active]="_clockView === 'hour'"
-                  (click)="_toggleHours('hour')">{{ hours }}</a>:<a href="javascript:void(0)" class="md2-datepicker-header-minute"
-                                                                          [class.active]="_clockView === 'minute'"
-                                                                          (click)="_toggleHours('minute')">{{ minutes }}</a>
+    <div class="ngx-md-datepicker-container">
+      <div class="header ng-material-datepicker">
+        <a href="javascript:void(0)" class="year-date" (click)="_showCalendar()"
+           *ngIf="data.type === 'date' || data.type === 'datetime'"
+           [class.active]="_isCalendarVisible">
+          <p class="year">{{ currentYear }}</p>
+          <p class="date">{{ getDateLabel }}</p>
+        </a>
+        <div class="md2-datepicker-header-time"
+             *ngIf="data.type === 'time' || data.type === 'datetime'"
+             [class.active]="!_isCalendarVisible">
+          <a href="javascript:void(0)" class="md2-datepicker-header-hour"
+             [class.active]="_clockView === 'hour' && !ampmView"
+             (click)="_toggleHours('hour')">{{ hours }}</a>:<a href="javascript:void(0)"
+                                                               class="md2-datepicker-header-minute"
+                                                               [class.active]="_clockView === 'minute' && !ampmView"
+                                                               (click)="_toggleHours('minute')">{{ minutes }}</a>
+          <a href="javascript:void(0)"
+             *ngIf="disable24Hr"
+             class="md2-datepicker-header-ampm"
+             [class.active]="ampmView"
+             (click)="_toggleAmpm()">{{ ampm }}</a>
+        </div>
       </div>
-    </div>
-    <div class="ngx-md-datepicker-content">
-      <div class="ngx-md-datepicker-inner">
-        <div class="ngx-md-datepicker-calendar" [class.active]="_isCalendarVisible">
-          <div class="nav ng-material-datepicker">
-            <button md-icon-button class="left" (click)="onPrevMonth()">
-              <md-icon>keyboard_arrow_left</md-icon>
-            </button>
-            <div class="title">
-              <div [@calendarAnimation]="animate">{{ displayMonth.full }} {{ displayYear }}</div>
-            </div>
-            <button md-icon-button class="right" (click)="onNextMonth()">
-              <md-icon>keyboard_arrow_right</md-icon>
-            </button>
-          </div>
-          <div class="content ng-material-datepicker">
-            <div class="labels">
-              <div class="label" *ngFor="let day of dayNames">
-                {{ day.letter }}
+      <div class="ngx-md-datepicker-content">
+        <div class="ngx-md-datepicker-inner">
+          <div class="ngx-md-datepicker-calendar" [class.active]="_isCalendarVisible">
+            <div class="nav ng-material-datepicker">
+              <button md-icon-button class="left" (click)="onPrevMonth()">
+                <md-icon>keyboard_arrow_left</md-icon>
+              </button>
+              <div class="title">
+                <div [@calendarAnimation]="animate">{{ displayMonth.full }} {{ displayYear }}</div>
               </div>
+              <button md-icon-button class="right" (click)="onNextMonth()">
+                <md-icon>keyboard_arrow_right</md-icon>
+              </button>
             </div>
-            <div [@calendarAnimation]="animate" class="month">
-              <div *ngFor="let day of displayDays" class="day" (click)="onSelectDate(day)"
-                   [ngClass]="getDayBackgroundColor(day)">
+            <div class="content ng-material-datepicker">
+              <div class="labels">
+                <div class="label" *ngFor="let day of dayNames">
+                  {{ day.letter }}
+                </div>
+              </div>
+              <div [@calendarAnimation]="animate" class="month">
+                <div *ngFor="let day of displayDays" class="day" (click)="onSelectDate(day)"
+                     [ngClass]="getDayBackgroundColor(day)">
                       <span *ngIf="day != 0" [ngClass]="getDayForegroundColor(day)">
                           {{ day.getDate() }}
                         </span>
+                </div>
               </div>
             </div>
           </div>
+          <div class="ngx-md-datepicker-clock" [class.active]="!_isCalendarVisible">
+            <ngx-md-clock [startView]="_clockView"
+                          [interval]="timeInterval"
+                          [selected]="date"
+                          [min]="min"
+                          [max]="max"
+                          [twelvehour]="disable24Hr"
+                          (activeDateChange)="_onActiveTimeChange($event)"
+                          (selectedChange)="_onTimeChange($event)"></ngx-md-clock>
+          </div>
         </div>
-        <div class="ngx-md-datepicker-clock" [class.active]="!_isCalendarVisible">
-          <ngx-md-clock [startView]="_clockView"
-                        [interval]="timeInterval"
-                        [selected]="date"
-                        [min]="min"
-                        [max]="max"
-                        (activeDateChange)="_onActiveTimeChange($event)"
-                        (selectedChange)="_onTimeChange($event)"></ngx-md-clock>
+        <div class="footer ng-material-datepicker">
+          <a md-button (click)="onToday()">Today</a>
+          <!--<a md-button (click)="onCancel()">Cancel</a>-->
+          <a md-button (click)="onOk()">Ok</a>
+          <a md-button (click)="onClear()">Clear</a>
         </div>
-      </div>
-      <div class="footer ng-material-datepicker">
-        <a md-button (click)="onToday()">Today</a>
-        <!--<a md-button (click)="onCancel()">Cancel</a>-->
-        <a md-button (click)="onOk()">Ok</a>
-        <a md-button (click)="onClear()">Clear</a>
       </div>
     </div>
-  </div>
   `,
   // styleUrls: ['./calendar.component.scss'],
   animations: [
@@ -162,7 +169,9 @@ export class CalendarComponent implements OnInit {
   }
 
   get hours(): string {
-    return ('0' + this._date.getHours()).slice(-2);
+    const currentHour = (this._date.getHours() > 12 && this.disable24Hr)
+      ? (this._date.getHours() - 12) : this._date.getHours();
+    return ('0' + currentHour ).slice(-2);
   }
 
   get getDateLabel(): string {
@@ -172,6 +181,17 @@ export class CalendarComponent implements OnInit {
   get getMonthLabel(): string {
     return this._locale.getMonthLabel(this.date.getMonth(), this.date.getFullYear());
   }
+
+  private _ampm: string;
+
+  get ampm(): string {
+    return this._ampm;
+  }
+
+  set ampm(value) {
+    this._ampm = value;
+  }
+
 
   @Output()
   cancel = new EventEmitter<void>();
@@ -200,6 +220,10 @@ export class CalendarComponent implements OnInit {
   _clockView: ClockView = 'hour';
   @Input() timeInterval: number = 1;
 
+
+  disable24Hr: boolean = false;
+  ampmView: boolean = false;
+
   constructor(calendarService: CalendarService,
               private _locale: DateLocale,
               private _util: DateUtil,
@@ -212,6 +236,10 @@ export class CalendarComponent implements OnInit {
   ngOnInit() {
     this.date = this.data.date || new Date();
     this._isCalendarVisible = this.data.type !== 'time';
+
+    this.disable24Hr = this.data.disable24Hr;
+
+    this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
   }
 
   private updateDate(date: Date) {
@@ -292,8 +320,14 @@ export class CalendarComponent implements OnInit {
    * Toggle Hour visiblity
    */
   _toggleHours(value: ClockView) {
+    this.ampmView = false;
     this._isCalendarVisible = false;
     this._clockView = value;
+  }
+
+  _toggleAmpm() {
+    this.ampmView = true;
+    this._ampm = this._ampm === 'AM' || !this._ampm ? 'PM' : 'AM';
   }
 
   getDayBackgroundColor(day: Date) {
@@ -314,7 +348,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  onClear(){
+  onClear() {
     this.submit.emit(null);
   }
 
@@ -349,6 +383,10 @@ export class CalendarComponent implements OnInit {
   }
 
   onOk() {
+    if (this._ampm === 'PM') {
+      this.date.setHours(this.date.getHours() + 12);
+    }
+
     this.submit.emit(this.date);
   }
 

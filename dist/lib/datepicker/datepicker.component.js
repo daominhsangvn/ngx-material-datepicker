@@ -114,7 +114,8 @@ var DatePickerComponent = (function () {
         var ref = this.dialog.open(CalendarComponent, {
             data: {
                 type: this.type,
-                date: this.date
+                date: this.date,
+                disable24Hr: this.disable24Hr
             }
         });
         // Workaround to update style of dialog which sits outside of the component
@@ -258,7 +259,7 @@ export { DatePickerComponent };
 DatePickerComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ngx-md-datepicker',
-                template: "\n    <md-input-container flex>\n      <input (click)=\"openDialog()\" \n        mdInput \n        #input\n        (keydown)=\"$event.preventDefault()\"\n        [value]=\"formattedDate\" \n        placeholder=\"{{placeholder}}\"\n        [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
+                template: "\n    <md-input-container flex>\n      <input (click)=\"openDialog()\"\n             mdInput\n             #input\n             (keydown)=\"$event.preventDefault()\"\n             [value]=\"formattedDate\"\n             placeholder=\"{{placeholder}}\"\n             [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
                 host: {
                     'role': 'datepicker',
                     '[class.ngx-md-datepicker-disabled]': 'disabled',
@@ -286,4 +287,5 @@ DatePickerComponent.propDecorators = {
     'format': [{ type: Input },],
     'date': [{ type: Input },],
     'placeholder': [{ type: Input },],
+    'disable24Hr': [{ type: Input },],
 };

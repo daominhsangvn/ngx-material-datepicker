@@ -22,12 +22,12 @@ const DATE_PICKER_VALUE_ACCESSOR = {
   useExisting: forwardRef(() => DatePickerComponent),
   multi: true
 };
-import {MdDialog} from '@angular/material';
+import { MdDialog } from '@angular/material';
 
-import {CalendarComponent} from './calendar.component';
-import {Month} from './month.model';
-import {Weekday} from './weekday.model';
-import {LANG_EN} from './lang-en';
+import { CalendarComponent } from './calendar.component';
+import { Month } from './month.model';
+import { Weekday } from './weekday.model';
+import { LANG_EN } from './lang-en';
 
 let coerceBooleanProperty = (value: any): boolean => {
   return value != null && `${value}` !== 'false';
@@ -37,13 +37,13 @@ let coerceBooleanProperty = (value: any): boolean => {
   selector: 'ngx-md-datepicker',
   template: `
     <md-input-container flex>
-      <input (click)="openDialog()" 
-        mdInput 
-        #input
-        (keydown)="$event.preventDefault()"
-        [value]="formattedDate" 
-        placeholder="{{placeholder}}"
-        [disabled]="disabled">
+      <input (click)="openDialog()"
+             mdInput
+             #input
+             (keydown)="$event.preventDefault()"
+             [value]="formattedDate"
+             placeholder="{{placeholder}}"
+             [disabled]="disabled">
       <md-icon mdPrefix>date_range</md-icon>
     </md-input-container>
   `,
@@ -140,6 +140,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   @Input() placeholder: string;
 
+  @Input() disable24Hr: boolean;
+
   constructor(dialog: MdDialog,
               private _element: ElementRef,
               /*@Self() @Optional() public _control: NgControl*/) {
@@ -164,7 +166,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     let ref = this.dialog.open(CalendarComponent, {
       data: {
         type: this.type,
-        date: this.date
+        date: this.date,
+        disable24Hr: this.disable24Hr
       }
     });
 

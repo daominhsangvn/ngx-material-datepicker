@@ -21,6 +21,8 @@ var CalendarComponent = (function () {
         this._dates = [];
         this._clockView = 'hour';
         this.timeInterval = 1;
+        this.disable24Hr = false;
+        this.ampmView = false;
         this.calendarService = calendarService;
         this.dayNames = LANG_EN.weekDays;
         this.monthNames = LANG_EN.months;
@@ -82,7 +84,9 @@ var CalendarComponent = (function () {
     });
     Object.defineProperty(CalendarComponent.prototype, "hours", {
         get: function () {
-            return ('0' + this._date.getHours()).slice(-2);
+            var currentHour = (this._date.getHours() > 12 && this.disable24Hr)
+                ? (this._date.getHours() - 12) : this._date.getHours();
+            return ('0' + currentHour).slice(-2);
         },
         enumerable: true,
         configurable: true
@@ -101,9 +105,21 @@ var CalendarComponent = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(CalendarComponent.prototype, "ampm", {
+        get: function () {
+            return this._ampm;
+        },
+        set: function (value) {
+            this._ampm = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     CalendarComponent.prototype.ngOnInit = function () {
         this.date = this.data.date || new Date();
         this._isCalendarVisible = this.data.type !== 'time';
+        this.disable24Hr = this.data.disable24Hr;
+        this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
     };
     CalendarComponent.prototype.updateDate = function (date) {
         this.currentMonthNumber = date.getMonth();
@@ -176,8 +192,13 @@ var CalendarComponent = (function () {
      * Toggle Hour visiblity
      */
     CalendarComponent.prototype._toggleHours = function (value) {
+        this.ampmView = false;
         this._isCalendarVisible = false;
         this._clockView = value;
+    };
+    CalendarComponent.prototype._toggleAmpm = function () {
+        this.ampmView = true;
+        this._ampm = this._ampm === 'AM' || !this._ampm ? 'PM' : 'AM';
     };
     CalendarComponent.prototype.getDayBackgroundColor = function (day) {
         if (this.equalsDate(day, this.date)) {
@@ -229,6 +250,9 @@ var CalendarComponent = (function () {
         this.cancel.emit();
     };
     CalendarComponent.prototype.onOk = function () {
+        if (this._ampm === 'PM') {
+            this.date.setHours(this.date.getHours() + 12);
+        }
         this.submit.emit(this.date);
     };
     CalendarComponent.prototype.triggerAnimation = function (direction) {
@@ -242,7 +266,7 @@ export { CalendarComponent };
 CalendarComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ngx-material-datepicker-calendar',
-                template: "\n  <div class=\"ngx-md-datepicker-container\">\n    <div class=\"header ng-material-datepicker\">\n      <a href=\"javascript:void(0)\" class=\"year-date\" (click)=\"_showCalendar()\" \n      *ngIf=\"data.type === 'date' || data.type === 'datetime'\"\n      [class.active]=\"_isCalendarVisible\">\n        <p class=\"year\">{{ currentYear }}</p>\n        <p class=\"date\">{{ getDateLabel }}</p>\n      </a>\n      <div class=\"md2-datepicker-header-time\"\n           *ngIf=\"data.type === 'time' || data.type === 'datetime'\"\n           [class.active]=\"!_isCalendarVisible\">\n            <a href=\"javascript:void(0)\" class=\"md2-datepicker-header-hour\"\n                  [class.active]=\"_clockView === 'hour'\"\n                  (click)=\"_toggleHours('hour')\">{{ hours }}</a>:<a href=\"javascript:void(0)\" class=\"md2-datepicker-header-minute\"\n                                                                          [class.active]=\"_clockView === 'minute'\"\n                                                                          (click)=\"_toggleHours('minute')\">{{ minutes }}</a>\n      </div>\n    </div>\n    <div class=\"ngx-md-datepicker-content\">\n      <div class=\"ngx-md-datepicker-inner\">\n        <div class=\"ngx-md-datepicker-calendar\" [class.active]=\"_isCalendarVisible\">\n          <div class=\"nav ng-material-datepicker\">\n            <button md-icon-button class=\"left\" (click)=\"onPrevMonth()\">\n              <md-icon>keyboard_arrow_left</md-icon>\n            </button>\n            <div class=\"title\">\n              <div [@calendarAnimation]=\"animate\">{{ displayMonth.full }} {{ displayYear }}</div>\n            </div>\n            <button md-icon-button class=\"right\" (click)=\"onNextMonth()\">\n              <md-icon>keyboard_arrow_right</md-icon>\n            </button>\n          </div>\n          <div class=\"content ng-material-datepicker\">\n            <div class=\"labels\">\n              <div class=\"label\" *ngFor=\"let day of dayNames\">\n                {{ day.letter }}\n              </div>\n            </div>\n            <div [@calendarAnimation]=\"animate\" class=\"month\">\n              <div *ngFor=\"let day of displayDays\" class=\"day\" (click)=\"onSelectDate(day)\"\n                   [ngClass]=\"getDayBackgroundColor(day)\">\n                      <span *ngIf=\"day != 0\" [ngClass]=\"getDayForegroundColor(day)\">\n                          {{ day.getDate() }}\n                        </span>\n              </div>\n            </div>\n          </div>\n        </div>\n        <div class=\"ngx-md-datepicker-clock\" [class.active]=\"!_isCalendarVisible\">\n          <ngx-md-clock [startView]=\"_clockView\"\n                        [interval]=\"timeInterval\"\n                        [selected]=\"date\"\n                        [min]=\"min\"\n                        [max]=\"max\"\n                        (activeDateChange)=\"_onActiveTimeChange($event)\"\n                        (selectedChange)=\"_onTimeChange($event)\"></ngx-md-clock>\n        </div>\n      </div>\n      <div class=\"footer ng-material-datepicker\">\n        <a md-button (click)=\"onToday()\">Today</a>\n        <!--<a md-button (click)=\"onCancel()\">Cancel</a>-->\n        <a md-button (click)=\"onOk()\">Ok</a>\n        <a md-button (click)=\"onClear()\">Clear</a>\n      </div>\n    </div>\n  </div>\n  ",
+                template: "\n    <div class=\"ngx-md-datepicker-container\">\n      <div class=\"header ng-material-datepicker\">\n        <a href=\"javascript:void(0)\" class=\"year-date\" (click)=\"_showCalendar()\"\n           *ngIf=\"data.type === 'date' || data.type === 'datetime'\"\n           [class.active]=\"_isCalendarVisible\">\n          <p class=\"year\">{{ currentYear }}</p>\n          <p class=\"date\">{{ getDateLabel }}</p>\n        </a>\n        <div class=\"md2-datepicker-header-time\"\n             *ngIf=\"data.type === 'time' || data.type === 'datetime'\"\n             [class.active]=\"!_isCalendarVisible\">\n          <a href=\"javascript:void(0)\" class=\"md2-datepicker-header-hour\"\n             [class.active]=\"_clockView === 'hour' && !ampmView\"\n             (click)=\"_toggleHours('hour')\">{{ hours }}</a>:<a href=\"javascript:void(0)\"\n                                                               class=\"md2-datepicker-header-minute\"\n                                                               [class.active]=\"_clockView === 'minute' && !ampmView\"\n                                                               (click)=\"_toggleHours('minute')\">{{ minutes }}</a>\n          <a href=\"javascript:void(0)\"\n             *ngIf=\"disable24Hr\"\n             class=\"md2-datepicker-header-ampm\"\n             [class.active]=\"ampmView\"\n             (click)=\"_toggleAmpm()\">{{ ampm }}</a>\n        </div>\n      </div>\n      <div class=\"ngx-md-datepicker-content\">\n        <div class=\"ngx-md-datepicker-inner\">\n          <div class=\"ngx-md-datepicker-calendar\" [class.active]=\"_isCalendarVisible\">\n            <div class=\"nav ng-material-datepicker\">\n              <button md-icon-button class=\"left\" (click)=\"onPrevMonth()\">\n                <md-icon>keyboard_arrow_left</md-icon>\n              </button>\n              <div class=\"title\">\n                <div [@calendarAnimation]=\"animate\">{{ displayMonth.full }} {{ displayYear }}</div>\n              </div>\n              <button md-icon-button class=\"right\" (click)=\"onNextMonth()\">\n                <md-icon>keyboard_arrow_right</md-icon>\n              </button>\n            </div>\n            <div class=\"content ng-material-datepicker\">\n              <div class=\"labels\">\n                <div class=\"label\" *ngFor=\"let day of dayNames\">\n                  {{ day.letter }}\n                </div>\n              </div>\n              <div [@calendarAnimation]=\"animate\" class=\"month\">\n                <div *ngFor=\"let day of displayDays\" class=\"day\" (click)=\"onSelectDate(day)\"\n                     [ngClass]=\"getDayBackgroundColor(day)\">\n                      <span *ngIf=\"day != 0\" [ngClass]=\"getDayForegroundColor(day)\">\n                          {{ day.getDate() }}\n                        </span>\n                </div>\n              </div>\n            </div>\n          </div>\n          <div class=\"ngx-md-datepicker-clock\" [class.active]=\"!_isCalendarVisible\">\n            <ngx-md-clock [startView]=\"_clockView\"\n                          [interval]=\"timeInterval\"\n                          [selected]=\"date\"\n                          [min]=\"min\"\n                          [max]=\"max\"\n                          [twelvehour]=\"disable24Hr\"\n                          (activeDateChange)=\"_onActiveTimeChange($event)\"\n                          (selectedChange)=\"_onTimeChange($event)\"></ngx-md-clock>\n          </div>\n        </div>\n        <div class=\"footer ng-material-datepicker\">\n          <a md-button (click)=\"onToday()\">Today</a>\n          <!--<a md-button (click)=\"onCancel()\">Cancel</a>-->\n          <a md-button (click)=\"onOk()\">Ok</a>\n          <a md-button (click)=\"onClear()\">Clear</a>\n        </div>\n      </div>\n    </div>\n  ",
                 // styleUrls: ['./calendar.component.scss'],
                 animations: [
                     trigger('calendarAnimation', [
