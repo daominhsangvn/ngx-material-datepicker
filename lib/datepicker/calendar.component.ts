@@ -53,13 +53,13 @@ import { DateUtil } from './date-util';
         <div class="ngx-md-datepicker-inner">
           <div class="ngx-md-datepicker-calendar" [class.active]="_isCalendarVisible">
             <div class="nav ng-material-datepicker">
-              <button md-icon-button class="left" (click)="onPrevMonth()">
+              <button md-icon-button class="left" [class.disabled]="!_previousEnabled()" (click)="onPrevMonth()">
                 <md-icon>keyboard_arrow_left</md-icon>
               </button>
               <div class="title">
                 <div [@calendarAnimation]="animate">{{ displayMonth.full }} {{ displayYear }}</div>
               </div>
-              <button md-icon-button class="right" (click)="onNextMonth()">
+              <button md-icon-button class="right" [class.disabled]="!_nextEnabled()" (click)="onNextMonth()">
                 <md-icon>keyboard_arrow_right</md-icon>
               </button>
             </div>
@@ -240,6 +240,12 @@ export class CalendarComponent implements OnInit {
   allowMultiDate: boolean = false;
   selectedDates: Date[] = [];
 
+  /** The minimum selectable date. */
+  @Input() minDate: Date;
+
+  /** The maximum selectable date. */
+  @Input() maxDate: Date;
+
   constructor(calendarService: CalendarService,
               private _locale: DateLocale,
               private _util: DateUtil,
@@ -264,6 +270,9 @@ export class CalendarComponent implements OnInit {
     } else {
       this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
     }
+
+    this.minDate = this.data.minDate;
+    this.maxDate = this.data.maxDate;
   }
 
   private updateDate(date: Date) {
@@ -454,7 +463,32 @@ export class CalendarComponent implements OnInit {
     setTimeout(() => this.animate = 'reset', 230);
   }
 
-  private toggleDates() {
+  /** Whether the two dates represent the same view in the current view mode (month or year). */
+  private _isSameView(date1: Date, date2: Date): boolean {
 
+    console.log(this._isCalendarVisible ?
+      this._util.getYear(date1) === this._util.getYear(date2) &&
+      this._util.getMonth(date1) === this._util.getMonth(date2) :
+      this._util.getYear(date1) === this._util.getYear(date2));
+    return this._isCalendarVisible ?
+      this._util.getYear(date1) === this._util.getYear(date2) &&
+      this._util.getMonth(date1) === this._util.getMonth(date2) :
+      this._util.getYear(date1) === this._util.getYear(date2);
+  }
+
+  /** Whether the previous period button is enabled. */
+  _previousEnabled(): boolean {
+    if (!this.minDate) {
+      return true;
+    }
+    const firstActive = this.allowMultiDate && this.selectedDates ? this.selectedDates[0] : this.date;
+    return !this.minDate || !this._isSameView(firstActive || new Date(), this.minDate);
+  }
+
+  /** Whether the next period button is enabled. */
+  _nextEnabled(): boolean {
+
+    const firstActive = this.allowMultiDate && this.selectedDates ? this.selectedDates[0] : this.date;
+    return !this.maxDate || !firstActive || !this._isSameView(firstActive || new Date(), this.maxDate);
   }
 }

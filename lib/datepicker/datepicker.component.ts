@@ -161,6 +161,32 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     this.formattedDate = this.formatDates(val);
   }
 
+  /** The minimum valid date. */
+  @Input()
+  get min(): Date {
+    return this._minDate;
+  }
+
+  set min(value: Date) {
+    this._minDate = value;
+    this._validatorOnChange();
+  }
+
+  _minDate: Date;
+
+  /** The maximum valid date. */
+  @Input()
+  get max(): Date {
+    return this._maxDate;
+  }
+
+  set max(value: Date) {
+    this._maxDate = value;
+    this._validatorOnChange();
+  }
+
+  _maxDate: Date;
+
   @Input() placeholder: string;
 
   @Input() disable24Hr: boolean;
@@ -194,7 +220,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
         date: this.date,
         disable24Hr: this.disable24Hr,
         allowMultiDate: this.allowMultiDate,
-        dates: this.dates || []
+        dates: this.dates || [],
+        minDate: this._minDate,
+        maxDate: this._maxDate
       }
     });
 
@@ -325,6 +353,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   };
   private _onValueChange = (_: any) => {
   };
+  private _validatorOnChange = () => {
+  };
 
   // get accessor
   public get value(): any {
@@ -356,6 +386,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     } else {
       this.date = value;
     }
+  }
+
+  public registerOnValidatorChange(fn: () => void): void {
+    this._validatorOnChange = fn;
   }
 }
 

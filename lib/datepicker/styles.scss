@@ -166,6 +166,11 @@ ngx-md-clock {
   z-index: 100;
 }
 
+.nav.ng-material-datepicker .left.disabled, .nav.ng-material-datepicker .right.disabled {
+  color: rgba(0,0,0,.38);
+  pointer-events: none;
+}
+
 .nav.ng-material-datepicker .title {
   position: absolute;
   left: 0px;
