@@ -1,5 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output, Inject } from '@angular/core';
-import { animate, trigger, transition, style, keyframes } from '@angular/animations';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Inject
+} from '@angular/core';
+import {
+  animate,
+  trigger,
+  transition,
+  style,
+  keyframes
+} from '@angular/animations';
 import { MD_DIALOG_DATA } from '@angular/material';
 import { CalendarService } from './calendar.service';
 import { Month } from './month.model';
@@ -197,7 +210,7 @@ export class CalendarComponent implements OnInit {
   cancel = new EventEmitter<void>();
 
   @Output()
-  submit = new EventEmitter<Date>();
+  submit = new EventEmitter<any>();
 
   dayNames: Array<Weekday>;
   monthNames: Array<Month>;
@@ -224,6 +237,9 @@ export class CalendarComponent implements OnInit {
   disable24Hr: boolean = false;
   ampmView: boolean = false;
 
+  allowMultiDate: boolean = false;
+  selectedDates: Date[] = [];
+
   constructor(calendarService: CalendarService,
               private _locale: DateLocale,
               private _util: DateUtil,
@@ -235,11 +251,19 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit() {
     this.date = this.data.date || new Date();
+
+    this.selectedDates = this.data.dates;
     this._isCalendarVisible = this.data.type !== 'time';
 
     this.disable24Hr = this.data.disable24Hr;
 
-    this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
+    this.allowMultiDate = this.data.allowMultiDate;
+
+    if (this.allowMultiDate) {
+      this._ampm = this.selectedDates && this.selectedDates.length && this.data.type !== 'date' && this.selectedDates[0].getHours() >= 12 ? 'PM' : 'AM';
+    } else {
+      this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
+    }
   }
 
   private updateDate(date: Date) {
@@ -331,7 +355,14 @@ export class CalendarComponent implements OnInit {
   }
 
   getDayBackgroundColor(day: Date) {
-    if (this.equalsDate(day, this.date)) {
+    let equal = false;
+
+    if (this.allowMultiDate) {
+      equal = !!(this.selectedDates.length && this.selectedDates.find((obj) => this.equalsDate(obj, day)));
+    } else {
+      equal = this.equalsDate(day, this.date);
+    }
+    if (equal) {
       return 'day-background-selected';
     } else {
       return 'day-background-normal';
@@ -339,7 +370,15 @@ export class CalendarComponent implements OnInit {
   }
 
   getDayForegroundColor(day: Date) {
-    if (this.equalsDate(day, this.date)) {
+    let equal = false;
+
+    if (this.allowMultiDate) {
+      equal = !!(this.selectedDates.length && this.selectedDates.find((obj) => this.equalsDate(obj, day)));
+    } else {
+      equal = this.equalsDate(day, this.date);
+    }
+
+    if (equal) {
       return 'day-foreground-selected';
     } else if (this.equalsDate(day, this.today)) {
       return 'day-foreground-today';
@@ -353,7 +392,7 @@ export class CalendarComponent implements OnInit {
   }
 
   onToday() {
-    this.date = this.today;
+    this.onSelectDate(this.today);
   }
 
   onPrevMonth() {
@@ -375,7 +414,17 @@ export class CalendarComponent implements OnInit {
   }
 
   onSelectDate(date: Date) {
-    this.date = date;
+
+    if (this.allowMultiDate) {
+      const findedIdx = this.selectedDates.findIndex((obj, idx) => {
+        return this.equalsDate(obj, date);
+      });
+
+      findedIdx > -1 ? this.selectedDates.splice(findedIdx, 1) : this.selectedDates.push(date);
+
+    } else {
+      this.date = date;
+    }
   }
 
   onCancel() {
@@ -383,15 +432,29 @@ export class CalendarComponent implements OnInit {
   }
 
   onOk() {
-    if (this._ampm === 'PM') {
-      this.date.setHours(this.date.getHours() + 12);
-    }
+    if (this.allowMultiDate) {
 
-    this.submit.emit(this.date);
+      this.selectedDates.map((obj) => {
+        if (this._ampm === 'PM') {
+          obj.setHours(this.date.getHours() + 12);
+        }
+      });
+      this.submit.emit(this.selectedDates);
+    } else {
+      if (this._ampm === 'PM') {
+        this.date.setHours(this.date.getHours() + 12);
+      }
+
+      this.submit.emit(this.date);
+    }
   }
 
   private triggerAnimation(direction: string): void {
     this.animate = direction;
     setTimeout(() => this.animate = 'reset', 230);
+  }
+
+  private toggleDates() {
+
   }
 }

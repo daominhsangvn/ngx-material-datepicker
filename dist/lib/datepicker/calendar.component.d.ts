@@ -29,7 +29,7 @@ export declare class CalendarComponent implements OnInit {
     private _ampm;
     ampm: string;
     cancel: EventEmitter<void>;
-    submit: EventEmitter<Date>;
+    submit: EventEmitter<any>;
     dayNames: Array<Weekday>;
     monthNames: Array<Month>;
     today: Date;
@@ -50,6 +50,8 @@ export declare class CalendarComponent implements OnInit {
     timeInterval: number;
     disable24Hr: boolean;
     ampmView: boolean;
+    allowMultiDate: boolean;
+    selectedDates: Date[];
     constructor(calendarService: CalendarService, _locale: DateLocale, _util: DateUtil, data: any);
     ngOnInit(): void;
     private updateDate(date);
@@ -78,4 +80,5 @@ export declare class CalendarComponent implements OnInit {
     onCancel(): void;
     onOk(): void;
     private triggerAnimation(direction);
+    private toggleDates();
 }

@@ -23,6 +23,8 @@ var CalendarComponent = (function () {
         this.timeInterval = 1;
         this.disable24Hr = false;
         this.ampmView = false;
+        this.allowMultiDate = false;
+        this.selectedDates = [];
         this.calendarService = calendarService;
         this.dayNames = LANG_EN.weekDays;
         this.monthNames = LANG_EN.months;
@@ -117,9 +119,16 @@ var CalendarComponent = (function () {
     });
     CalendarComponent.prototype.ngOnInit = function () {
         this.date = this.data.date || new Date();
+        this.selectedDates = this.data.dates;
         this._isCalendarVisible = this.data.type !== 'time';
         this.disable24Hr = this.data.disable24Hr;
-        this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
+        this.allowMultiDate = this.data.allowMultiDate;
+        if (this.allowMultiDate) {
+            this._ampm = this.selectedDates && this.selectedDates.length && this.data.type !== 'date' && this.selectedDates[0].getHours() >= 12 ? 'PM' : 'AM';
+        }
+        else {
+            this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
+        }
     };
     CalendarComponent.prototype.updateDate = function (date) {
         this.currentMonthNumber = date.getMonth();
@@ -201,7 +210,15 @@ var CalendarComponent = (function () {
         this._ampm = this._ampm === 'AM' || !this._ampm ? 'PM' : 'AM';
     };
     CalendarComponent.prototype.getDayBackgroundColor = function (day) {
-        if (this.equalsDate(day, this.date)) {
+        var _this = this;
+        var equal = false;
+        if (this.allowMultiDate) {
+            equal = !!(this.selectedDates.length && this.selectedDates.find(function (obj) { return _this.equalsDate(obj, day); }));
+        }
+        else {
+            equal = this.equalsDate(day, this.date);
+        }
+        if (equal) {
             return 'day-background-selected';
         }
         else {
@@ -209,7 +226,15 @@ var CalendarComponent = (function () {
         }
     };
     CalendarComponent.prototype.getDayForegroundColor = function (day) {
-        if (this.equalsDate(day, this.date)) {
+        var _this = this;
+        var equal = false;
+        if (this.allowMultiDate) {
+            equal = !!(this.selectedDates.length && this.selectedDates.find(function (obj) { return _this.equalsDate(obj, day); }));
+        }
+        else {
+            equal = this.equalsDate(day, this.date);
+        }
+        if (equal) {
             return 'day-foreground-selected';
         }
         else if (this.equalsDate(day, this.today)) {
@@ -223,7 +248,7 @@ var CalendarComponent = (function () {
         this.submit.emit(null);
     };
     CalendarComponent.prototype.onToday = function () {
-        this.date = this.today;
+        this.onSelectDate(this.today);
     };
     CalendarComponent.prototype.onPrevMonth = function () {
         if (this.displayMonthNumber > 0) {
@@ -244,21 +269,43 @@ var CalendarComponent = (function () {
         this.triggerAnimation('right');
     };
     CalendarComponent.prototype.onSelectDate = function (date) {
-        this.date = date;
+        var _this = this;
+        if (this.allowMultiDate) {
+            var findedIdx = this.selectedDates.findIndex(function (obj, idx) {
+                return _this.equalsDate(obj, date);
+            });
+            findedIdx > -1 ? this.selectedDates.splice(findedIdx, 1) : this.selectedDates.push(date);
+        }
+        else {
+            this.date = date;
+        }
     };
     CalendarComponent.prototype.onCancel = function () {
         this.cancel.emit();
     };
     CalendarComponent.prototype.onOk = function () {
-        if (this._ampm === 'PM') {
-            this.date.setHours(this.date.getHours() + 12);
+        var _this = this;
+        if (this.allowMultiDate) {
+            this.selectedDates.map(function (obj) {
+                if (_this._ampm === 'PM') {
+                    obj.setHours(_this.date.getHours() + 12);
+                }
+            });
+            this.submit.emit(this.selectedDates);
         }
-        this.submit.emit(this.date);
+        else {
+            if (this._ampm === 'PM') {
+                this.date.setHours(this.date.getHours() + 12);
+            }
+            this.submit.emit(this.date);
+        }
     };
     CalendarComponent.prototype.triggerAnimation = function (direction) {
         var _this = this;
         this.animate = direction;
         setTimeout(function () { return _this.animate = 'reset'; }, 230);
+    };
+    CalendarComponent.prototype.toggleDates = function () {
     };
     return CalendarComponent;
 }());

@@ -7,10 +7,11 @@
       name="form"
       role="form"
       novalidate="">
-<ngx-md-datepicker [type]="'datetime'"
+<ngx-md-datepicker [type]="'date'"
+                   [allowMultiDate]="true"
                    formControlName="date"
-                   [disable24Hr]="true"
-                   [format]="'MM/dd/yyyy h:mm:ss a'"
+                   [format]="'MM/dd/yyyy'"
+                   (dateChange)="onDateChange($event)"
                    [placeholder]="'Date/Time'"></ngx-md-datepicker>
 </form>
 {{frm.get('date').errors | json}}

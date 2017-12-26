@@ -16,11 +16,15 @@ export class AppComponent {
   title = 'app works!';
   date: Date;
 
-  constructor(private _fb: FormBuilder){
+  constructor(private _fb: FormBuilder) {
     this.frm = this._fb.group({
       date: new FormControl(null, [
         Validators.required
       ]),
     });
+  }
+
+  public onDateChange(data) {
+    // console.log(data);
   }
 }

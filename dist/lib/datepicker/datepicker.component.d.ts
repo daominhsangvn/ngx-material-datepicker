@@ -11,18 +11,21 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     private _type;
     private _required;
     private _disabled;
+    private datesVal;
     dayNames: Array<Weekday>;
     monthNames: Array<Month>;
     formattedDate: string;
     _input: ElementRef;
     required: boolean;
     disabled: boolean;
-    dateChange: EventEmitter<Date>;
+    dateChange: EventEmitter<Date | Date[]>;
     type: Type;
     format: string;
     date: Date;
+    dates: Date[];
     placeholder: string;
     disable24Hr: boolean;
+    allowMultiDate: boolean;
     constructor(dialog: MdDialog, _element: ElementRef);
     ngOnInit(): void;
     _handleWindowResize(event: Event): void;
@@ -32,11 +35,12 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     private _LZ(x);
     private _formatDate(date, format);
     private formatDate(date);
+    private formatDates(dates);
     private _onValueTouched;
     private _onValueChange;
-    value: Date;
+    value: any;
     registerOnChange(fn: (value: any) => any): void;
     registerOnTouched(fn: () => any): void;
-    writeValue(value: Date): void;
+    writeValue(value: any): void;
 }
 export declare type Type = 'date' | 'time' | 'datetime';

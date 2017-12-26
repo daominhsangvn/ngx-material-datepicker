@@ -36,9 +36,8 @@ let coerceBooleanProperty = (value: any): boolean => {
 @Component({
   selector: 'ngx-md-datepicker',
   template: `
-    <md-input-container flex>
-      <input (click)="openDialog()"
-             mdInput
+    <md-input-container flex (click)="openDialog()">
+      <input mdInput
              #input
              (keydown)="$event.preventDefault()"
              [value]="formattedDate"
@@ -68,6 +67,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   private _required: boolean = false;
   private _disabled: boolean = false;
 
+  private datesVal: Date[];
+
   dayNames: Array<Weekday>;
   monthNames: Array<Month>;
   formattedDate: string;
@@ -93,7 +94,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   }
 
   @Output()
-  public dateChange = new EventEmitter<Date>();
+  public dateChange = new EventEmitter<Date | Date[]>();
 
   @Input()
   get type() {
@@ -138,9 +139,33 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     this.formattedDate = this.formatDate(val);
   }
 
+  @Input()
+  get dates(): Date[] {
+    return this.datesVal;
+  };
+
+  set dates(val: Date[]) {
+    if (val && val.length) {
+      val.sort((a, b) => {
+        return a.getTime() - b.getTime();
+      });
+    }
+    this.datesVal = val;
+    // Update ngModel
+    this._onValueChange(val);
+    setTimeout(() => {
+      // trigger dateChange event
+      this.dateChange.emit(val);
+    });
+    // format date
+    this.formattedDate = this.formatDates(val);
+  }
+
   @Input() placeholder: string;
 
   @Input() disable24Hr: boolean;
+
+  @Input() allowMultiDate: boolean;
 
   constructor(dialog: MdDialog,
               private _element: ElementRef,
@@ -154,9 +179,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit() {
-    if (!this.date) {
-      this.date = new Date();
-    }
+    // if (!this.date) {
+    //   this.date = new Date();
+    // }
   }
 
   _handleWindowResize(event: Event) {
@@ -167,7 +192,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
       data: {
         type: this.type,
         date: this.date,
-        disable24Hr: this.disable24Hr
+        disable24Hr: this.disable24Hr,
+        allowMultiDate: this.allowMultiDate,
+        dates: this.dates || []
       }
     });
 
@@ -176,7 +203,12 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     containerDiv.style['padding'] = '0';
 
     ref.componentInstance.submit.subscribe(result => {
-      this.date = result;
+      if (this.allowMultiDate) {
+        this.dates = result;
+      } else {
+
+        this.date = result;
+      }
       ref.close();
     });
     ref.componentInstance.cancel.subscribe(result => {
@@ -284,6 +316,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     return this._formatDate(date, this._format);
   }
 
+  private formatDates(dates: Date[]) {
+    return dates && dates.length ? dates.map((obj) => this.formatDate(obj)).join(', ') : '';
+  }
+
   // ngModel
   private _onValueTouched = () => {
   };
@@ -291,13 +327,13 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   };
 
   // get accessor
-  public get value(): Date {
+  public get value(): any {
     console.log('get value');
-    return this.date;
+    return this.allowMultiDate ? this.dates : this.date;
   };
 
   // set accessor including call the onchange callback
-  public set value(v: Date) {
+  public set value(v: any) {
     console.log('set value', v);
     this._onValueChange(v);
   }
@@ -314,8 +350,12 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
 
   // From ControlValueAccessor interface
   // ngModel change
-  public writeValue(value: Date) {
-    this.date = value;
+  public writeValue(value: any) {
+    if (this.allowMultiDate) {
+      this.dates = value;
+    } else {
+      this.date = value;
+    }
   }
 }
 
