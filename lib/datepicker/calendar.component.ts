@@ -53,13 +53,13 @@ import { DateUtil } from './date-util';
         <div class="ngx-md-datepicker-inner">
           <div class="ngx-md-datepicker-calendar" [class.active]="_isCalendarVisible">
             <div class="nav ng-material-datepicker">
-              <button md-icon-button class="left" (click)="onPrevMonth()">
+              <button md-icon-button class="left" [class.disabled]="!_previousEnabled()" (click)="onPrevMonth()">
                 <md-icon>keyboard_arrow_left</md-icon>
               </button>
               <div class="title">
                 <div [@calendarAnimation]="animate">{{ displayMonth.full }} {{ displayYear }}</div>
               </div>
-              <button md-icon-button class="right" (click)="onNextMonth()">
+              <button md-icon-button class="right" [class.disabled]="!_nextEnabled()" (click)="onNextMonth()">
                 <md-icon>keyboard_arrow_right</md-icon>
               </button>
             </div>
@@ -70,7 +70,9 @@ import { DateUtil } from './date-util';
                 </div>
               </div>
               <div [@calendarAnimation]="animate" class="month">
-                <div *ngFor="let day of displayDays" class="day" (click)="onSelectDate(day)"
+                <div *ngFor="let day of displayDays" class="day"
+                     [class.disabled]="!_canActiveDate(day)"
+                     (click)="onSelectDate(day)"
                      [ngClass]="getDayBackgroundColor(day)">
                       <span *ngIf="day != 0" [ngClass]="getDayForegroundColor(day)">
                           {{ day.getDate() }}
@@ -91,7 +93,7 @@ import { DateUtil } from './date-util';
           </div>
         </div>
         <div class="footer ng-material-datepicker">
-          <a md-button (click)="onToday()">Today</a>
+          <a md-button (click)="onToday()" *ngIf="_canActiveDate(today)">Today</a>
           <!--<a md-button (click)="onCancel()">Cancel</a>-->
           <a md-button (click)="onOk()">Ok</a>
           <a md-button (click)="onClear()">Clear</a>
@@ -240,6 +242,12 @@ export class CalendarComponent implements OnInit {
   allowMultiDate: boolean = false;
   selectedDates: Date[] = [];
 
+  /** The minimum selectable date. */
+  @Input() minDate: Date;
+
+  /** The maximum selectable date. */
+  @Input() maxDate: Date;
+
   constructor(calendarService: CalendarService,
               private _locale: DateLocale,
               private _util: DateUtil,
@@ -264,6 +272,9 @@ export class CalendarComponent implements OnInit {
     } else {
       this._ampm = this._date && this._date.getHours() >= 12 ? 'PM' : 'AM';
     }
+
+    this.minDate = this.data.minDate;
+    this.maxDate = this.data.maxDate;
   }
 
   private updateDate(date: Date) {
@@ -392,7 +403,9 @@ export class CalendarComponent implements OnInit {
   }
 
   onToday() {
-    this.onSelectDate(this.today);
+    if (this._canActiveDate(this.today)) {
+      this.onSelectDate(this.today);
+    }
   }
 
   onPrevMonth() {
@@ -454,7 +467,37 @@ export class CalendarComponent implements OnInit {
     setTimeout(() => this.animate = 'reset', 230);
   }
 
-  private toggleDates() {
+  /** Whether the two dates represent the same view in the current view mode (month or year). */
+  private _isSameView(date1: Date, date2: Date): boolean {
+    return this._isCalendarVisible ?
+      this._util.getYear(date1) === this._util.getYear(date2) &&
+      this._util.getMonth(date1) === this._util.getMonth(date2) :
+      this._util.getYear(date1) === this._util.getYear(date2);
+  }
 
+  /** Whether the previous period button is enabled. */
+  _previousEnabled(): boolean {
+    // if (!this.minDate) {
+    //   return true;
+    // }
+    const startDateOfMonth = new Date(this.displayYear, this.displayMonthNumber, 1);
+    return !this.minDate || !this._isSameView(startDateOfMonth, this.minDate);
+  }
+
+  /** Whether the next period button is enabled. */
+  _nextEnabled(): boolean {
+
+    const startDateOfMonth = new Date(this.displayYear, this.displayMonthNumber, 1);
+    return !this.maxDate || !this._isSameView(startDateOfMonth, this.maxDate);
+  }
+
+  _canActiveDate(date) {
+    const maxDate = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth() + 1, this.maxDate.getDate());
+    const minDate = new Date(this.minDate.getFullYear(), this.minDate.getMonth() + 1, this.minDate.getDate());
+
+    const day = date ? new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()) : date;
+
+    return (!maxDate && minDate && minDate <= day) || (!minDate && maxDate && maxDate >= day) ||
+      (minDate && minDate <= day && maxDate && maxDate >= day);
   }
 }

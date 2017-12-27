@@ -15,6 +15,8 @@ export class AppComponent {
   public frm: FormGroup;
   title = 'app works!';
   date: Date;
+  today = new Date();
+  maxDate = this.today;
 
   constructor(private _fb: FormBuilder) {
     this.frm = this._fb.group({
@@ -25,6 +27,6 @@ export class AppComponent {
   }
 
   public onDateChange(data) {
-    // console.log(data);
+     // console.log(data);
   }
 }

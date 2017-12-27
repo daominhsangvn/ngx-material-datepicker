@@ -32,8 +32,14 @@ ngx-md-clock {
 }
 
 .ngx-md-datepicker-container {
-  display: flex;
-  flex-direction: row;
+  display: block;
+  width: 286px;
+
+  @media (min-width: 480px) {
+    display: flex;
+    flex-direction: row;
+    width: 446px;
+  }
   a {
     outline: none;
     text-decoration: none;
@@ -49,7 +55,7 @@ ngx-md-clock {
       .year {
       }
       .date {
-        margin: 5px 0 15px 0;
+        margin: 5px 0 0 0;
       }
       &.active {
         opacity: 1;
@@ -130,7 +136,12 @@ ngx-md-clock {
 
 .header.ng-material-datepicker {
   padding: 16px;
-  width: 200px;
+  box-sizing: border-box;
+
+  @media (min-width: 480px) {
+    min-width: 150px;
+    width: 150px;
+  }
 }
 
 .header.ng-material-datepicker .year {
@@ -138,6 +149,7 @@ ngx-md-clock {
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 4px;
+  margin-top: 0;
 }
 
 .header.ng-material-datepicker .date {
@@ -166,6 +178,16 @@ ngx-md-clock {
   z-index: 100;
 }
 
+.nav.ng-material-datepicker .left.disabled, .nav.ng-material-datepicker .right.disabled, .content.ng-material-datepicker .day.disabled {
+  color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  cursor: none;
+
+  .day-foreground-normal {
+    color: rgba(0, 0, 0, 0.4);
+  }
+}
+
 .nav.ng-material-datepicker .title {
   position: absolute;
   left: 0px;
@@ -182,7 +204,7 @@ ngx-md-clock {
   font-size: 13px;
   padding-left: 8px;
   padding-right: 8px;
-  width: 22.4em;
+  //width: 22.4em;
   height: 18.2em;
   overflow: hidden;
 }
@@ -220,9 +242,9 @@ ngx-md-clock {
 
 .content.ng-material-datepicker .day {
   display: inline-block;
-  width: 2.44em;
+  width: 2.3em;
   height: 2.44em;
-  margin: 0 0.28em 0.4em;
+  margin: 0 0.33em 0.4em;
   border-radius: 2.44em;
   line-height: 2.44em;
   text-align: center;
@@ -370,4 +392,8 @@ $ngx-md-clock-cell-size: 14.1666% !default;
     color: white;
     background-color: lighten($primary, 5);
   }
+}
+
+.mat-dialog-container {
+  max-width: 90vw !important;
 }
