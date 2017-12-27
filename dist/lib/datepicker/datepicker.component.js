@@ -20,6 +20,7 @@ var DatePickerComponent = (function () {
         this._required = false;
         this._disabled = false;
         this.dateChange = new EventEmitter();
+        this.hasArrow = false;
         this._MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         this._DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         // ngModel
@@ -331,7 +332,7 @@ export { DatePickerComponent };
 DatePickerComponent.decorators = [
     { type: Component, args: [{
                 selector: 'ngx-md-datepicker',
-                template: "\n    <md-input-container flex (click)=\"openDialog()\">\n      <input mdInput\n             #input\n             (keydown)=\"$event.preventDefault()\"\n             [value]=\"formattedDate\"\n             placeholder=\"{{placeholder}}\"\n             [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n    </md-input-container>\n  ",
+                template: "\n    <md-input-container flex (click)=\"openDialog()\">\n      <input mdInput\n             #input\n             (keydown)=\"$event.preventDefault()\"\n             [value]=\"formattedDate\"\n             placeholder=\"{{placeholder}}\"\n             [disabled]=\"disabled\">\n      <md-icon mdPrefix>date_range</md-icon>\n      <md-icon mdSuffix *ngIf=\"hasArrow\">arrow_drop_down</md-icon>\n    </md-input-container>\n  ",
                 host: {
                     'role': 'datepicker',
                     '[class.ngx-md-datepicker-disabled]': 'disabled',
@@ -364,4 +365,5 @@ DatePickerComponent.propDecorators = {
     'placeholder': [{ type: Input },],
     'disable24Hr': [{ type: Input },],
     'allowMultiDate': [{ type: Input },],
+    'hasArrow': [{ type: Input },],
 };

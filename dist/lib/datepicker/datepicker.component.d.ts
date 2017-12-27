@@ -32,6 +32,7 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     placeholder: string;
     disable24Hr: boolean;
     allowMultiDate: boolean;
+    hasArrow: boolean;
     constructor(dialog: MdDialog, _element: ElementRef);
     ngOnInit(): void;
     _handleWindowResize(event: Event): void;

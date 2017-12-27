@@ -44,6 +44,7 @@ let coerceBooleanProperty = (value: any): boolean => {
              placeholder="{{placeholder}}"
              [disabled]="disabled">
       <md-icon mdPrefix>date_range</md-icon>
+      <md-icon mdSuffix *ngIf="hasArrow">arrow_drop_down</md-icon>
     </md-input-container>
   `,
   host: {
@@ -192,6 +193,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   @Input() disable24Hr: boolean;
 
   @Input() allowMultiDate: boolean;
+
+  @Input() hasArrow: boolean = false;
 
   constructor(dialog: MdDialog,
               private _element: ElementRef,
