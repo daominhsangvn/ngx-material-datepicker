@@ -16,7 +16,6 @@ export class AppComponent {
   title = 'app works!';
   date: Date;
   today = new Date();
-  maxDate = this.today;
 
   constructor(private _fb: FormBuilder) {
     this.frm = this._fb.group({

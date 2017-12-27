@@ -330,8 +330,8 @@ var CalendarComponent = (function () {
         return !this.maxDate || !this._isSameView(startDateOfMonth, this.maxDate);
     };
     CalendarComponent.prototype._canActiveDate = function (date) {
-        var maxDate = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth() + 1, this.maxDate.getDate());
-        var minDate = new Date(this.minDate.getFullYear(), this.minDate.getMonth() + 1, this.minDate.getDate());
+        var maxDate = this.maxDate ? new Date(this.maxDate.getFullYear(), this.maxDate.getMonth() + 1, this.maxDate.getDate()) : this.maxDate;
+        var minDate = this.minDate ? new Date(this.minDate.getFullYear(), this.minDate.getMonth() + 1, this.minDate.getDate()) : this.minDate;
         var day = date ? new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()) : date;
         return (!maxDate && minDate && minDate <= day) || (!minDate && maxDate && maxDate >= day) ||
             (minDate && minDate <= day && maxDate && maxDate >= day);

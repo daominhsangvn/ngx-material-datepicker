@@ -492,8 +492,8 @@ export class CalendarComponent implements OnInit {
   }
 
   _canActiveDate(date) {
-    const maxDate = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth() + 1, this.maxDate.getDate());
-    const minDate = new Date(this.minDate.getFullYear(), this.minDate.getMonth() + 1, this.minDate.getDate());
+    const maxDate = this.maxDate ? new Date(this.maxDate.getFullYear(), this.maxDate.getMonth() + 1, this.maxDate.getDate()) : this.maxDate;
+    const minDate = this.minDate ? new Date(this.minDate.getFullYear(), this.minDate.getMonth() + 1, this.minDate.getDate()) : this.minDate;
 
     const day = date ? new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()) : date;
 
