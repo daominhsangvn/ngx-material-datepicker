@@ -3,6 +3,10 @@ var CalendarService = (function () {
     function CalendarService() {
         this.firstWeekDay = 0; // 0 = sunday
     }
+    CalendarService.prototype.getDays = function (days) {
+        return days.slice(this.firstWeekDay, days.length)
+            .concat(days.slice(0, this.firstWeekDay));
+    };
     CalendarService.prototype.weekStartDate = function (date) {
         var startDate = new Date(date.getTime());
         while (startDate.getDay() !== this.firstWeekDay) {

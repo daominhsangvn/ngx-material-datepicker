@@ -8,6 +8,11 @@ export class CalendarService {
         this.firstWeekDay = 0; // 0 = sunday
     }
 
+    getDays(days) {
+      return days.slice(this.firstWeekDay, days.length)
+        .concat(days.slice(0, this.firstWeekDay));
+    }
+
     weekStartDate(date: any) {
         var startDate = new Date(date.getTime());
         while (startDate.getDay() !== this.firstWeekDay) {
@@ -29,7 +34,7 @@ export class CalendarService {
             currentDate = new Date(),
             date = this.weekStartDate(new Date(year, month, 1, currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds(), currentDate.getMilliseconds()));
         do {
-            for (i=0; i<7; i++) {
+            for (i= 0; i<7; i++) {
                 week.push(dayFormatter ? dayFormatter(date) : date);
                 date = new Date(date.getTime());
                 date.setDate(date.getDate() + 1);

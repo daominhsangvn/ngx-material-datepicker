@@ -26,7 +26,7 @@ var CalendarComponent = (function () {
         this.allowMultiDate = false;
         this.selectedDates = [];
         this.calendarService = calendarService;
-        this.dayNames = LANG_EN.weekDays;
+        this.dayNames = this.calendarService.getDays(LANG_EN.weekDays);
         this.monthNames = LANG_EN.months;
     }
     Object.defineProperty(CalendarComponent.prototype, "date", {

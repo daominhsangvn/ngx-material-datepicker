@@ -253,7 +253,7 @@ export class CalendarComponent implements OnInit {
               private _util: DateUtil,
               @Inject(MD_DIALOG_DATA) public data: any) {
     this.calendarService = calendarService;
-    this.dayNames = LANG_EN.weekDays;
+    this.dayNames = this.calendarService.getDays(LANG_EN.weekDays);
     this.monthNames = LANG_EN.months;
   }
 

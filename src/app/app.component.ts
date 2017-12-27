@@ -5,6 +5,7 @@ import {
   FormGroup,
   FormBuilder
 } from '@angular/forms';
+import { CalendarService } from "../../lib/datepicker/calendar.service";
 
 @Component({
   selector: 'app-root',
@@ -17,12 +18,15 @@ export class AppComponent {
   date: Date;
   today = new Date();
 
-  constructor(private _fb: FormBuilder) {
+  constructor(private _fb: FormBuilder,
+  private calendarService: CalendarService) {
     this.frm = this._fb.group({
       date: new FormControl(null, [
         Validators.required
       ]),
     });
+
+    this.calendarService.firstWeekDay = 1;
   }
 
   public onDateChange(data) {
