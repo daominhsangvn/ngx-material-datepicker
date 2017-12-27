@@ -5,7 +5,7 @@ import {
   FormGroup,
   FormBuilder
 } from '@angular/forms';
-import { CalendarService } from "../../lib/datepicker/calendar.service";
+import { CalendarService } from "../../lib/datepicker/datepicker.module";
 
 @Component({
   selector: 'app-root',

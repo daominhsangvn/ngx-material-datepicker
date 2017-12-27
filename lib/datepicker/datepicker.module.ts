@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   MdInputModule,
   MdRippleModule,
@@ -7,13 +7,14 @@ import {
   MdIconModule,
   MdDialogModule
 } from '@angular/material';
-import {DatePickerComponent} from './datepicker.component';
-import {NgxMaterialClock} from './clock';
-import {CalendarComponent} from './calendar.component';
-import {CalendarService} from './calendar.service';
-import {DateLocale} from './date-locale';
-import {DateUtil} from './date-util';
+import { DatePickerComponent } from './datepicker.component';
+import { NgxMaterialClock } from './clock';
+import { CalendarComponent } from './calendar.component';
+import { CalendarService } from './calendar.service';
+import { DateLocale } from './date-locale';
+import { DateUtil } from './date-util';
 
+export * from './calendar.service';
 @NgModule({
   declarations: [
     DatePickerComponent,

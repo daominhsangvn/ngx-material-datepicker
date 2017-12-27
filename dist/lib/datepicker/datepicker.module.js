@@ -7,6 +7,7 @@ import { CalendarComponent } from './calendar.component';
 import { CalendarService } from './calendar.service';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
+export * from './calendar.service';
 var DatePickerModule = (function () {
     function DatePickerModule() {
     }
