@@ -52,6 +52,10 @@ export declare class CalendarComponent implements OnInit {
     ampmView: boolean;
     allowMultiDate: boolean;
     selectedDates: Date[];
+    /** The minimum selectable date. */
+    minDate: Date;
+    /** The maximum selectable date. */
+    maxDate: Date;
     constructor(calendarService: CalendarService, _locale: DateLocale, _util: DateUtil, data: any);
     ngOnInit(): void;
     private updateDate(date);
@@ -80,5 +84,11 @@ export declare class CalendarComponent implements OnInit {
     onCancel(): void;
     onOk(): void;
     private triggerAnimation(direction);
-    private toggleDates();
+    /** Whether the two dates represent the same view in the current view mode (month or year). */
+    private _isSameView(date1, date2);
+    /** Whether the previous period button is enabled. */
+    _previousEnabled(): boolean;
+    /** Whether the next period button is enabled. */
+    _nextEnabled(): boolean;
+    _canActiveDate(date: any): boolean;
 }

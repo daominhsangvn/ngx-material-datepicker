@@ -27,6 +27,8 @@ var DatePickerComponent = (function () {
         };
         this._onValueChange = function (_) {
         };
+        this._validatorOnChange = function () {
+        };
         this.dialog = dialog;
         this.dayNames = LANG_EN.weekDays;
         this.monthNames = LANG_EN.months;
@@ -127,6 +129,30 @@ var DatePickerComponent = (function () {
         configurable: true
     });
     ;
+    Object.defineProperty(DatePickerComponent.prototype, "min", {
+        /** The minimum valid date. */
+        get: function () {
+            return this._minDate;
+        },
+        set: function (value) {
+            this._minDate = value;
+            this._validatorOnChange();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DatePickerComponent.prototype, "max", {
+        /** The maximum valid date. */
+        get: function () {
+            return this._maxDate;
+        },
+        set: function (value) {
+            this._maxDate = value;
+            this._validatorOnChange();
+        },
+        enumerable: true,
+        configurable: true
+    });
     DatePickerComponent.prototype.ngOnInit = function () {
         // if (!this.date) {
         //   this.date = new Date();
@@ -142,7 +168,9 @@ var DatePickerComponent = (function () {
                 date: this.date,
                 disable24Hr: this.disable24Hr,
                 allowMultiDate: this.allowMultiDate,
-                dates: this.dates || []
+                dates: this.dates || [],
+                minDate: this._minDate,
+                maxDate: this._maxDate
             }
         });
         // Workaround to update style of dialog which sits outside of the component
@@ -294,6 +322,9 @@ var DatePickerComponent = (function () {
             this.date = value;
         }
     };
+    DatePickerComponent.prototype.registerOnValidatorChange = function (fn) {
+        this._validatorOnChange = fn;
+    };
     return DatePickerComponent;
 }());
 export { DatePickerComponent };
@@ -328,6 +359,8 @@ DatePickerComponent.propDecorators = {
     'format': [{ type: Input },],
     'date': [{ type: Input },],
     'dates': [{ type: Input },],
+    'min': [{ type: Input },],
+    'max': [{ type: Input },],
     'placeholder': [{ type: Input },],
     'disable24Hr': [{ type: Input },],
     'allowMultiDate': [{ type: Input },],

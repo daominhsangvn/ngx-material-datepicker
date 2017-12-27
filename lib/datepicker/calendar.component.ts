@@ -70,7 +70,9 @@ import { DateUtil } from './date-util';
                 </div>
               </div>
               <div [@calendarAnimation]="animate" class="month">
-                <div *ngFor="let day of displayDays" class="day" (click)="onSelectDate(day)"
+                <div *ngFor="let day of displayDays" class="day"
+                     [class.disabled]="!_canActiveDate(day)"
+                     (click)="onSelectDate(day)"
                      [ngClass]="getDayBackgroundColor(day)">
                       <span *ngIf="day != 0" [ngClass]="getDayForegroundColor(day)">
                           {{ day.getDate() }}
@@ -91,7 +93,7 @@ import { DateUtil } from './date-util';
           </div>
         </div>
         <div class="footer ng-material-datepicker">
-          <a md-button (click)="onToday()">Today</a>
+          <a md-button (click)="onToday()" *ngIf="_canActiveDate(today)">Today</a>
           <!--<a md-button (click)="onCancel()">Cancel</a>-->
           <a md-button (click)="onOk()">Ok</a>
           <a md-button (click)="onClear()">Clear</a>
@@ -401,7 +403,9 @@ export class CalendarComponent implements OnInit {
   }
 
   onToday() {
-    this.onSelectDate(this.today);
+    if (this._canActiveDate(this.today)) {
+      this.onSelectDate(this.today);
+    }
   }
 
   onPrevMonth() {
@@ -465,11 +469,6 @@ export class CalendarComponent implements OnInit {
 
   /** Whether the two dates represent the same view in the current view mode (month or year). */
   private _isSameView(date1: Date, date2: Date): boolean {
-
-    console.log(this._isCalendarVisible ?
-      this._util.getYear(date1) === this._util.getYear(date2) &&
-      this._util.getMonth(date1) === this._util.getMonth(date2) :
-      this._util.getYear(date1) === this._util.getYear(date2));
     return this._isCalendarVisible ?
       this._util.getYear(date1) === this._util.getYear(date2) &&
       this._util.getMonth(date1) === this._util.getMonth(date2) :
@@ -478,17 +477,27 @@ export class CalendarComponent implements OnInit {
 
   /** Whether the previous period button is enabled. */
   _previousEnabled(): boolean {
-    if (!this.minDate) {
-      return true;
-    }
-    const firstActive = this.allowMultiDate && this.selectedDates ? this.selectedDates[0] : this.date;
-    return !this.minDate || !this._isSameView(firstActive || new Date(), this.minDate);
+    // if (!this.minDate) {
+    //   return true;
+    // }
+    const startDateOfMonth = new Date(this.displayYear, this.displayMonthNumber, 1);
+    return !this.minDate || !this._isSameView(startDateOfMonth, this.minDate);
   }
 
   /** Whether the next period button is enabled. */
   _nextEnabled(): boolean {
 
-    const firstActive = this.allowMultiDate && this.selectedDates ? this.selectedDates[0] : this.date;
-    return !this.maxDate || !firstActive || !this._isSameView(firstActive || new Date(), this.maxDate);
+    const startDateOfMonth = new Date(this.displayYear, this.displayMonthNumber, 1);
+    return !this.maxDate || !this._isSameView(startDateOfMonth, this.maxDate);
+  }
+
+  _canActiveDate(date) {
+    const maxDate = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth() + 1, this.maxDate.getDate());
+    const minDate = new Date(this.minDate.getFullYear(), this.minDate.getMonth() + 1, this.minDate.getDate());
+
+    const day = date ? new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()) : date;
+
+    return (!maxDate && minDate && minDate <= day) || (!minDate && maxDate && maxDate >= day) ||
+      (minDate && minDate <= day && maxDate && maxDate >= day);
   }
 }

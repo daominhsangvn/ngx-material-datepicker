@@ -23,6 +23,12 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     format: string;
     date: Date;
     dates: Date[];
+    /** The minimum valid date. */
+    min: Date;
+    _minDate: Date;
+    /** The maximum valid date. */
+    max: Date;
+    _maxDate: Date;
     placeholder: string;
     disable24Hr: boolean;
     allowMultiDate: boolean;
@@ -38,9 +44,11 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     private formatDates(dates);
     private _onValueTouched;
     private _onValueChange;
+    private _validatorOnChange;
     value: any;
     registerOnChange(fn: (value: any) => any): void;
     registerOnTouched(fn: () => any): void;
     writeValue(value: any): void;
+    registerOnValidatorChange(fn: () => void): void;
 }
 export declare type Type = 'date' | 'time' | 'datetime';

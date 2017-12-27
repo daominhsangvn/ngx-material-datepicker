@@ -7,12 +7,12 @@
       name="form"
       role="form"
       novalidate="">
-<ngx-md-datepicker [type]="'date'"
-                   [min]="today"
-                   [allowMultiDate]="true"
-                   formControlName="date"
-                   [format]="'MM/dd/yyyy'"
-                   (dateChange)="onDateChange($event)"
-                   [placeholder]="'Date/Time'"></ngx-md-datepicker>
+  <ngx-md-datepicker [type]="'date'"
+                     [min]="today"
+                     [max]="maxDate"
+                     [allowMultiDate]="true"
+                     formControlName="date"
+                     [format]="'MM/dd/yyyy'"
+                     (dateChange)="onDateChange($event)"
+                     [placeholder]="'Date/Time'"></ngx-md-datepicker>
 </form>
-{{frm.get('date').errors | json}}
