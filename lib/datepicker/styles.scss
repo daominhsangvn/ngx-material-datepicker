@@ -33,12 +33,12 @@ ngx-md-clock {
 
 .ngx-md-datepicker-container {
   display: block;
-  width: 286px;
+  min-width: 286px;
 
   @media (min-width: 480px) {
     display: flex;
     flex-direction: row;
-    width: 446px;
+    min-width: 446px;
   }
   a {
     outline: none;
