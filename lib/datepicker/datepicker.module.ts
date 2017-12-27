@@ -15,6 +15,9 @@ import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
 
 export * from './calendar.service';
+export * from './date-locale';
+export * from './date-util';
+
 @NgModule({
   declarations: [
     DatePickerComponent,
