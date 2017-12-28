@@ -74,7 +74,7 @@ import { DateUtil } from './date-util';
                      [class.disabled]="!_canActiveDate(day)"
                      (click)="onSelectDate(day)"
                      [ngClass]="getDayBackgroundColor(day)">
-                      <span *ngIf="day != 0" [ngClass]="getDayForegroundColor(day)">
+                      <span *ngIf="day != 0" class="day-foreground" [ngClass]="getDayForegroundColor(day)">
                           {{ day.getDate() }}
                         </span>
                 </div>
@@ -375,6 +375,8 @@ export class CalendarComponent implements OnInit {
     }
     if (equal) {
       return 'day-background-selected';
+    } else if (this.equalsDate(day, this.today)) {
+      return 'day-background-today';
     } else {
       return 'day-background-normal';
     }
