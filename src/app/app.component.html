@@ -7,8 +7,9 @@
       name="form"
       role="form"
       novalidate="">
-  <ngx-md-datepicker [type]="'date'"
+  <ngx-md-datepicker [type]="'datetime'"
                      [min]="today"
+                     [max]="maxDate"
                      [hasArrow]="true"
                      [allowMultiDate]="true"
                      formControlName="date"

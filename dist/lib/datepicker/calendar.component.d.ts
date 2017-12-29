@@ -5,6 +5,7 @@ import { Weekday } from './weekday.model';
 import { ClockView } from './clock';
 import { DateLocale } from './date-locale';
 import { DateUtil } from './date-util';
+export declare type DatepickerView = 'calendar' | 'clock' | 'year';
 export declare class CalendarComponent implements OnInit {
     private _locale;
     private _util;
@@ -12,7 +13,6 @@ export declare class CalendarComponent implements OnInit {
     private readonly calendarService;
     private _date;
     private _value;
-    private _selected;
     dateChange: EventEmitter<Date>;
     date: Date;
     value: Date;
@@ -37,15 +37,13 @@ export declare class CalendarComponent implements OnInit {
     currentMonthNumber: number;
     currentYear: number;
     currentDay: number;
-    currentDayOfWeek: Weekday;
     displayMonth: Month;
     displayMonthNumber: number;
     displayYear: number;
     displayDays: Array<number>;
+    activeDay: number;
     animate: string;
     _years: Array<number>;
-    _dates: Array<Object>;
-    _isCalendarVisible: boolean;
     _clockView: ClockView;
     timeInterval: number;
     disable24Hr: boolean;
@@ -56,6 +54,7 @@ export declare class CalendarComponent implements OnInit {
     minDate: Date;
     /** The maximum selectable date. */
     maxDate: Date;
+    _mainView: DatepickerView;
     constructor(calendarService: CalendarService, _locale: DateLocale, _util: DateUtil, data: any);
     ngOnInit(): void;
     private updateDate(date);
@@ -74,14 +73,13 @@ export declare class CalendarComponent implements OnInit {
      */
     _toggleHours(value: ClockView): void;
     _toggleAmpm(): void;
-    getDayBackgroundColor(day: Date): "day-background-selected" | "day-background-today" | "day-background-normal";
     getDayForegroundColor(day: Date): "day-foreground-selected" | "day-foreground-today" | "day-foreground-normal";
+    getMonthForegroundColor(month: any): "day-foreground-selected" | "day-foreground-normal";
     onClear(): void;
     onToday(): void;
     onPrevMonth(): void;
     onNextMonth(): void;
     onSelectDate(date: Date): void;
-    onCancel(): void;
     onOk(): void;
     private triggerAnimation(direction);
     /** Whether the two dates represent the same view in the current view mode (month or year). */
@@ -91,4 +89,8 @@ export declare class CalendarComponent implements OnInit {
     /** Whether the next period button is enabled. */
     _nextEnabled(): boolean;
     _canActiveDate(date: any): boolean;
+    _canActiveMonth(month: any): boolean;
+    onSelectMonth(month: any): void;
+    onPrevYear(): void;
+    onNextYear(): void;
 }

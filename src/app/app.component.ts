@@ -17,9 +17,10 @@ export class AppComponent {
   title = 'app works!';
   date: Date;
   today = new Date();
+  maxDate = new Date(2019, 10, 1);
 
   constructor(private _fb: FormBuilder,
-  private calendarService: CalendarService) {
+              private calendarService: CalendarService) {
     this.frm = this._fb.group({
       date: new FormControl(null, [
         Validators.required
@@ -30,6 +31,6 @@ export class AppComponent {
   }
 
   public onDateChange(data) {
-     // console.log(data);
+    // console.log(data);
   }
 }

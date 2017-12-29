@@ -30,6 +30,8 @@
 $ngx-md-calendar-height: 290px;
 $ngx-md-calendar-width: 286px;
 $ngx-md-calendar-width-xs: 446px;
+$md2-calendar-body-cell-size: 100% / 7 !default;
+$md2-calendar-body-cell-padding: $md2-calendar-body-cell-size / 2 !default;
 ngx-md-clock {
   display: block;
 }
@@ -54,15 +56,20 @@ ngx-md-clock {
     display: flex;
     flex-direction: column;
     .year-date {
-      opacity: 0.5;
       .year {
+        opacity: 0.5;
+        &.active {
+          opacity: 1;
+        }
       }
       .date {
         margin: 5px 0 0 0;
+        opacity: 0.5;
+        &.active {
+          opacity: 1;
+        }
       }
-      &.active {
-        opacity: 1;
-      }
+
     }
     .md2-datepicker-header-time {
       color: #fff;
@@ -148,6 +155,21 @@ ngx-md-clock {
     border-color: transparent;
     border-radius: 50%;
   }
+
+  .day-foreground-label {
+    padding: $md2-calendar-body-cell-padding;
+    height: 0;
+    line-height: 0;
+    color: rgba(0, 0, 0, .54);
+    transform: translateX(-6px);
+    text-align: left;
+  }
+}
+
+.content.ng-material-datepicker .day:not(.disabled):hover {
+  & > .day-foreground:not(.day-foreground-selected) {
+    background-color: rgba(black, 0.12);
+  }
 }
 
 .header.ng-material-datepicker, .nav.ng-material-datepicker, .content.ng-material-datepicker, .footer.ng-material-datepicker {
@@ -165,7 +187,7 @@ ngx-md-clock {
 }
 
 .header.ng-material-datepicker .year {
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 4px;
@@ -260,12 +282,23 @@ ngx-md-clock {
   justify-content: center;
 }
 
+.content.ng-material-datepicker .year {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: wrap;
+  flex-flow: wrap;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: space-between;
+}
+
 .content.ng-material-datepicker .day {
   position: relative;
-  width: 14.28571%;
+  width: $md2-calendar-body-cell-size;
   height: 0;
   line-height: 0;
-  padding: 7.14286% 0;
+  padding: $md2-calendar-body-cell-padding 0;
   text-align: center;
   outline: 0;
   cursor: pointer;
