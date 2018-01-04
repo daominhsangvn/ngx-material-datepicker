@@ -43,7 +43,7 @@ ngx-md-clock {
   @media (min-width: 480px) {
     display: flex;
     flex-direction: row;
-    min-width: 446px;
+    min-width: $ngx-md-calendar-width-xs;
   }
   a {
     outline: none;
@@ -110,10 +110,11 @@ ngx-md-clock {
       position: absolute;
       top: 0;
       right: 100%;
-      display: block;
       width: 100%;
       height: $ngx-md-calendar-height;
       transition: .3s;
+      display: flex;
+      flex-direction: column;
       &.active {
         right: 0;
       }
@@ -158,11 +159,14 @@ ngx-md-clock {
 
   .day-foreground-label {
     padding: $md2-calendar-body-cell-padding;
-    height: 0;
+    //height: 0;
     line-height: 0;
     color: rgba(0, 0, 0, .54);
     transform: translateX(-6px);
     text-align: left;
+    //display: flex;
+    display: inline-block;
+    vertical-align: top;
   }
 }
 
@@ -244,11 +248,14 @@ ngx-md-clock {
 
 .content.ng-material-datepicker {
   font-size: 13px;
-  padding-left: 8px;
-  padding-right: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
   //width: 22.4em;
-  height: 18.2em;
+  //height: 18.2em;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .content.ng-material-datepicker .labels {
@@ -280,28 +287,32 @@ ngx-md-clock {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  flex: 1;
 }
 
-.content.ng-material-datepicker .year {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-flow: wrap;
-  flex-flow: wrap;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: space-between;
-}
+//.content.ng-material-datepicker .year {
+//  display: -webkit-box;
+//  display: -ms-flexbox;
+//  display: flex;
+//  -ms-flex-flow: wrap;
+//  flex-flow: wrap;
+//  -webkit-box-pack: center;
+//  -ms-flex-pack: center;
+//  justify-content: space-between;
+//  flex: 1;
+//  align-content: start;
+//}
 
 .content.ng-material-datepicker .day {
   position: relative;
   width: $md2-calendar-body-cell-size;
-  height: 0;
+  //height: 0;
   line-height: 0;
   padding: $md2-calendar-body-cell-padding 0;
   text-align: center;
   outline: 0;
   cursor: pointer;
+  display: inline-block;
 }
 
 .footer.ng-material-datepicker {
