@@ -217,6 +217,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   }
 
   openDialog() {
+    const submit = new EventEmitter();
+
+    const cancel = new EventEmitter();
+
     let ref = this.dialog.open(CalendarComponent, {
       data: {
         type: this.type,
@@ -225,7 +229,9 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
         allowMultiDate: this.allowMultiDate,
         dates: this.dates || [],
         minDate: this._minDate,
-        maxDate: this._maxDate
+        maxDate: this._maxDate,
+        submit: submit,
+        cancel: cancel
       }
     });
 
@@ -233,7 +239,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     let containerDiv = (<any>ref)._overlayRef._pane.children[0];
     containerDiv.style['padding'] = '0';
 
-    ref.componentInstance.submit.subscribe(result => {
+    submit.subscribe(result => {
       if (this.allowMultiDate) {
         this.dates = result;
       } else {
@@ -242,7 +248,8 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
       }
       ref.close();
     });
-    ref.componentInstance.cancel.subscribe(result => {
+
+    cancel.subscribe(result => {
       ref.close();
     });
   }
@@ -251,16 +258,16 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   private _DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   private _LZ(x) {
-    return (x < 0 || x > 9 ? "" : "0") + x;
+    return (x < 0 || x > 9 ? '' : '0') + x;
   }
 
   // http://mattkruse.com/javascript/date/source.html
   private _formatDate(date, format) {
-    format = format + "";
-    let result = "";
+    format = format + '';
+    let result = '';
     let i_format = 0;
-    let c = "";
-    let token = "";
+    let c = '';
+    let token = '';
     let y = date.getYear().toString();
     let M = date.getMonth() + 1;
     let d = date.getDate();
@@ -274,50 +281,50 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     if (y.length < 4) {
       y = (y - 0 + 1900).toString();
     }
-    value["y"] = "" + y;
-    value["yyyy"] = y;
-    value["yy"] = y.substring(2, 4);
-    value["M"] = M;
-    value["MM"] = this._LZ(M);
-    value["MMM"] = this._MONTH_NAMES[M - 1];
-    value["NNN"] = this._MONTH_NAMES[M + 11];
-    value["d"] = d;
-    value["dd"] = this._LZ(d);
-    value["E"] = this._DAY_NAMES[E + 7];
-    value["EE"] = this._DAY_NAMES[E];
-    value["H"] = Ho;
-    value["HH"] = this._LZ(Ho);
+    value['y'] = '' + y;
+    value['yyyy'] = y;
+    value['yy'] = y.substring(2, 4);
+    value['M'] = M;
+    value['MM'] = this._LZ(M);
+    value['MMM'] = this._MONTH_NAMES[M - 1];
+    value['NNN'] = this._MONTH_NAMES[M + 11];
+    value['d'] = d;
+    value['dd'] = this._LZ(d);
+    value['E'] = this._DAY_NAMES[E + 7];
+    value['EE'] = this._DAY_NAMES[E];
+    value['H'] = Ho;
+    value['HH'] = this._LZ(Ho);
     if (Ho == 0) {
-      value["h"] = 12;
+      value['h'] = 12;
     }
     else if (Ho > 12) {
-      value["h"] = Ho - 12;
+      value['h'] = Ho - 12;
     }
     else {
-      value["h"] = Ho;
+      value['h'] = Ho;
     }
-    value["hh"] = this._LZ(value["h"]);
+    value['hh'] = this._LZ(value['h']);
     if (Ho > 11) {
-      value["K"] = Ho - 12;
+      value['K'] = Ho - 12;
     } else {
-      value["K"] = Ho;
+      value['K'] = Ho;
     }
-    value["k"] = Ho + 1;
-    value["KK"] = this._LZ(value["K"]);
-    value["kk"] = this._LZ(value["k"]);
+    value['k'] = Ho + 1;
+    value['KK'] = this._LZ(value['K']);
+    value['kk'] = this._LZ(value['k']);
     if (Ho > 11) {
-      value["a"] = "PM";
+      value['a'] = 'PM';
     }
     else {
-      value["a"] = "AM";
+      value['a'] = 'AM';
     }
-    value["m"] = m;
-    value["mm"] = this._LZ(m);
-    value["s"] = s;
-    value["ss"] = this._LZ(s);
+    value['m'] = m;
+    value['mm'] = this._LZ(m);
+    value['s'] = s;
+    value['ss'] = this._LZ(s);
     while (i_format < format.length) {
       c = format.charAt(i_format);
-      token = "";
+      token = '';
       while ((format.charAt(i_format) == c) && (i_format < format.length)) {
         token += format.charAt(i_format++);
       }

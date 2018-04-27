@@ -130,6 +130,8 @@ var CalendarComponent = (function () {
         }
         this.minDate = this.data.minDate;
         this.maxDate = this.data.maxDate;
+        this.submit = this.data.submit;
+        this.cancel = this.data.cancel;
     };
     CalendarComponent.prototype.updateDate = function (date) {
         this.currentMonthNumber = date.getMonth();

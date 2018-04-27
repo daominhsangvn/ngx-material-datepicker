@@ -163,6 +163,8 @@ var DatePickerComponent = (function () {
     };
     DatePickerComponent.prototype.openDialog = function () {
         var _this = this;
+        var submit = new EventEmitter();
+        var cancel = new EventEmitter();
         var ref = this.dialog.open(CalendarComponent, {
             data: {
                 type: this.type,
@@ -171,13 +173,15 @@ var DatePickerComponent = (function () {
                 allowMultiDate: this.allowMultiDate,
                 dates: this.dates || [],
                 minDate: this._minDate,
-                maxDate: this._maxDate
+                maxDate: this._maxDate,
+                submit: submit,
+                cancel: cancel
             }
         });
         // Workaround to update style of dialog which sits outside of the component
         var containerDiv = ref._overlayRef._pane.children[0];
         containerDiv.style['padding'] = '0';
-        ref.componentInstance.submit.subscribe(function (result) {
+        submit.subscribe(function (result) {
             if (_this.allowMultiDate) {
                 _this.dates = result;
             }
@@ -186,20 +190,20 @@ var DatePickerComponent = (function () {
             }
             ref.close();
         });
-        ref.componentInstance.cancel.subscribe(function (result) {
+        cancel.subscribe(function (result) {
             ref.close();
         });
     };
     DatePickerComponent.prototype._LZ = function (x) {
-        return (x < 0 || x > 9 ? "" : "0") + x;
+        return (x < 0 || x > 9 ? '' : '0') + x;
     };
     // http://mattkruse.com/javascript/date/source.html
     DatePickerComponent.prototype._formatDate = function (date, format) {
-        format = format + "";
-        var result = "";
+        format = format + '';
+        var result = '';
         var i_format = 0;
-        var c = "";
-        var token = "";
+        var c = '';
+        var token = '';
         var y = date.getYear().toString();
         var M = date.getMonth() + 1;
         var d = date.getDate();
@@ -213,51 +217,51 @@ var DatePickerComponent = (function () {
         if (y.length < 4) {
             y = (y - 0 + 1900).toString();
         }
-        value["y"] = "" + y;
-        value["yyyy"] = y;
-        value["yy"] = y.substring(2, 4);
-        value["M"] = M;
-        value["MM"] = this._LZ(M);
-        value["MMM"] = this._MONTH_NAMES[M - 1];
-        value["NNN"] = this._MONTH_NAMES[M + 11];
-        value["d"] = d;
-        value["dd"] = this._LZ(d);
-        value["E"] = this._DAY_NAMES[E + 7];
-        value["EE"] = this._DAY_NAMES[E];
-        value["H"] = Ho;
-        value["HH"] = this._LZ(Ho);
+        value['y'] = '' + y;
+        value['yyyy'] = y;
+        value['yy'] = y.substring(2, 4);
+        value['M'] = M;
+        value['MM'] = this._LZ(M);
+        value['MMM'] = this._MONTH_NAMES[M - 1];
+        value['NNN'] = this._MONTH_NAMES[M + 11];
+        value['d'] = d;
+        value['dd'] = this._LZ(d);
+        value['E'] = this._DAY_NAMES[E + 7];
+        value['EE'] = this._DAY_NAMES[E];
+        value['H'] = Ho;
+        value['HH'] = this._LZ(Ho);
         if (Ho == 0) {
-            value["h"] = 12;
+            value['h'] = 12;
         }
         else if (Ho > 12) {
-            value["h"] = Ho - 12;
+            value['h'] = Ho - 12;
         }
         else {
-            value["h"] = Ho;
+            value['h'] = Ho;
         }
-        value["hh"] = this._LZ(value["h"]);
+        value['hh'] = this._LZ(value['h']);
         if (Ho > 11) {
-            value["K"] = Ho - 12;
+            value['K'] = Ho - 12;
         }
         else {
-            value["K"] = Ho;
+            value['K'] = Ho;
         }
-        value["k"] = Ho + 1;
-        value["KK"] = this._LZ(value["K"]);
-        value["kk"] = this._LZ(value["k"]);
+        value['k'] = Ho + 1;
+        value['KK'] = this._LZ(value['K']);
+        value['kk'] = this._LZ(value['k']);
         if (Ho > 11) {
-            value["a"] = "PM";
+            value['a'] = 'PM';
         }
         else {
-            value["a"] = "AM";
+            value['a'] = 'AM';
         }
-        value["m"] = m;
-        value["mm"] = this._LZ(m);
-        value["s"] = s;
-        value["ss"] = this._LZ(s);
+        value['m'] = m;
+        value['mm'] = this._LZ(m);
+        value['s'] = s;
+        value['ss'] = this._LZ(s);
         while (i_format < format.length) {
             c = format.charAt(i_format);
-            token = "";
+            token = '';
             while ((format.charAt(i_format) == c) && (i_format < format.length)) {
                 token += format.charAt(i_format++);
             }

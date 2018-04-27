@@ -133,16 +133,16 @@ export type DatepickerView = 'calendar' | 'clock' | 'year';
     trigger('calendarAnimation', [
       transition('* => left', [
         animate('0.225s ease-in-out', keyframes([
-          style({transform: 'translateX(105%)', offset: 0.5}),
-          style({transform: 'translateX(-130%)', offset: 0.51}),
-          style({transform: 'translateX(0)', offset: 1}),
+          style({ transform: 'translateX(105%)', offset: 0.5 }),
+          style({ transform: 'translateX(-130%)', offset: 0.51 }),
+          style({ transform: 'translateX(0)', offset: 1 }),
         ]))
       ]),
       transition('* => right', [
         animate('0.225s ease-in-out', keyframes([
-          style({transform: 'translateX(-105%)', offset: 0.5}),
-          style({transform: 'translateX(130%)', offset: 0.51}),
-          style({transform: 'translateX(0)', offset: 1})
+          style({ transform: 'translateX(-105%)', offset: 0.5 }),
+          style({ transform: 'translateX(130%)', offset: 0.51 }),
+          style({ transform: 'translateX(0)', offset: 1 })
         ]))
       ])
     ])
@@ -302,6 +302,9 @@ export class CalendarComponent implements OnInit {
 
     this.minDate = this.data.minDate;
     this.maxDate = this.data.maxDate;
+
+    this.submit = this.data.submit;
+    this.cancel = this.data.cancel;
   }
 
   private updateDate(date: Date) {
