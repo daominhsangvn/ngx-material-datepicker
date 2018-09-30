@@ -1,5 +1,5 @@
 {
-  "name": "ngx-material-datepicker",
+  "name": "@nois/ngx-material-datepicker",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
@@ -11,7 +11,6 @@
     "e2e": "ng e2e",
     "build:aot": "rimraf dist && ngc -p tsconfig-aot.json"
   },
-  "private": true,
   "main": "dist/index.js",
   "dependencies": {},
   "devDependencies": {
@@ -47,5 +46,18 @@
     "tslint": "~4.5.0",
     "typescript": "~2.2.0",
     "zone.js": "^0.8.4"
-  }
+  },
+  "description": "This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.3.",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daominhsangvn/ngx-material-datepicker.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/daominhsangvn/ngx-material-datepicker/issues"
+  },
+  "homepage": "https://github.com/daominhsangvn/ngx-material-datepicker#readme"
 }
