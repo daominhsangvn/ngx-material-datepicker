@@ -1,6 +1,6 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import '~@angular/material/theming';
-@import '../lib/datepicker/styles';
+@import '@nois/ngx-datepicker/styles';
 
 @include mat-core();
 
@@ -11,3 +11,17 @@ $app-warn: mat-palette($mat-red);
 $theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 @include calendar-theme($theme);
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@angular/material/theming';
+@import '@nois/ngx-datepicker/styles';
+
+@include mat-core();
+
+// Define the default theme (same as the example above).
+$app-primary: mat-palette($mat-indigo);
+$app-accent: mat-palette($mat-pink);
+$app-warn: mat-palette($mat-red);
+$theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+@include calendar-theme($theme);
+	

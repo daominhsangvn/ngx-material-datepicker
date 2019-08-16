@@ -1,19 +1,11 @@
-<h1>
-  {{title}}
-</h1>
-
-<form id="form"
-      [formGroup]="frm"
-      name="form"
-      role="form"
-      novalidate="">
-  <ngx-md-datepicker [type]="'datetime'"
-                     [min]="today"
-                     [max]="maxDate"
-                     [hasArrow]="true"
-                     [allowMultiDate]="true"
-                     formControlName="date"
-                     [format]="'MM/dd/yyyy'"
-                     (dateChange)="onDateChange($event)"
-                     [placeholder]="'Date/Time'"></ngx-md-datepicker>
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+</div>
+<form id="form" [formGroup]="frm" name="form" role="form" novalidate="">
+  <ngx-datepicker [type]="'datetime'" [min]="today" [max]="maxDate" [hasArrow]="true" [allowMultiDate]="true"
+    formControlName="date" [format]="'MM/dd/yyyy'" (dateChange)="onDateChange($event)" [placeholder]="'Date/Time'">
+  </ngx-datepicker>
 </form>
